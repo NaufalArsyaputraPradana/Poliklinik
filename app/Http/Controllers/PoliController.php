@@ -12,7 +12,8 @@ class PoliController extends Controller
      */
     public function index()
     {
-        //
+        $polis = Poli::all();
+        return view('admin.polis.index', compact('polis'));
     }
 
     /**
@@ -20,7 +21,7 @@ class PoliController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.polis.create');
     }
 
     /**
@@ -28,7 +29,17 @@ class PoliController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_poli' => 'required|string|max:255',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        Poli::create([
+            'nama_poli' => $request->nama_poli,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return redirect()->route('admin.polis.index')->with('success', 'Data poli berhasil ditambahkan.');
     }
 
     /**
@@ -36,7 +47,7 @@ class PoliController extends Controller
      */
     public function show(Poli $poli)
     {
-        //
+        return view('admin.polis.show', compact('poli'));
     }
 
     /**
@@ -44,7 +55,7 @@ class PoliController extends Controller
      */
     public function edit(Poli $poli)
     {
-        //
+        return view('admin.polis.edit', compact('poli'));
     }
 
     /**
@@ -52,7 +63,17 @@ class PoliController extends Controller
      */
     public function update(Request $request, Poli $poli)
     {
-        //
+        $request->validate([
+            'nama_poli' => 'required|string|max:255',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $poli->update([
+            'nama_poli' => $request->nama_poli,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return redirect()->route('admin.polis.index')->with('success', 'Data poli berhasil diubah.');
     }
 
     /**
@@ -60,6 +81,7 @@ class PoliController extends Controller
      */
     public function destroy(Poli $poli)
     {
-        //
+        $poli->delete();
+        return redirect()->route('admin.polis.index')->with('success', 'Data poli berhasil dihapus.');
     }
 }

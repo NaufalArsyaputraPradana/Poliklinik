@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\DetailPeriksa;
-use App\Models\Periksa;
 use App\Models\Obat;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Periksa;
 use Illuminate\Database\Seeder;
 
 class DetailPeriksaSeeder extends Seeder

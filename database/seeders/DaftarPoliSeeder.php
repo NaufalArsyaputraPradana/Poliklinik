@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\DaftarPoli;
-use App\Models\User;
 use App\Models\JadwalPeriksa;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DaftarPoliSeeder extends Seeder
@@ -36,9 +35,9 @@ class DaftarPoliSeeder extends Seeder
         foreach ($pasiens as $index => $pasien) {
             for ($i = 0; $i < 2; $i++) {
                 $jadwal = $jadwalPeriksas->random();
-                
+
                 // Initialize antrian counter for this jadwal if not exists
-                if (!isset($antrianCounter[$jadwal->id])) {
+                if (! isset($antrianCounter[$jadwal->id])) {
                     $antrianCounter[$jadwal->id] = 1;
                 }
 

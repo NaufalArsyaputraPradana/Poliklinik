@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Periksa;
 use App\Models\DaftarPoli;
+use App\Models\Periksa;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PeriksaSeeder extends Seeder
@@ -34,12 +33,15 @@ class PeriksaSeeder extends Seeder
         $processedDaftarPolis = $daftarPolis->take(ceil($daftarPolis->count() * 0.7));
 
         foreach ($processedDaftarPolis as $index => $daftarPoli) {
-            Periksa::create([
+            $periksa = Periksa::create([
                 'id_daftar_poli' => $daftarPoli->id,
                 'tgl_periksa' => Carbon::now()->subDays(rand(0, 7))->addHours(rand(8, 16)),
                 'catatan' => $catatanList[$index % count($catatanList)],
                 'biaya_periksa' => rand(50000, 200000),
             ]);
+
+            // Update the daftar_poli with the periksa id
+            $daftarPoli->update(['id_periksa' => $periksa->id]);
         }
     }
 }

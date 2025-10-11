@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Poli;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PoliSeeder extends Seeder
@@ -16,19 +15,19 @@ class PoliSeeder extends Seeder
         $polis = [
             [
                 'nama_poli' => 'Poli Umum',
-                'keterangan' => 'Pelayanan kesehatan umum untuk berbagai keluhan'
+                'keterangan' => 'Pelayanan kesehatan umum untuk berbagai keluhan',
             ],
             [
                 'nama_poli' => 'Poli Gigi',
-                'keterangan' => 'Pelayanan kesehatan gigi dan mulut'
+                'keterangan' => 'Pelayanan kesehatan gigi dan mulut',
             ],
             [
                 'nama_poli' => 'Poli Anak',
-                'keterangan' => 'Pelayanan kesehatan khusus untuk anak-anak'
+                'keterangan' => 'Pelayanan kesehatan khusus untuk anak-anak',
             ],
             [
                 'nama_poli' => 'Poli Mata',
-                'keterangan' => 'Pelayanan kesehatan mata'
+                'keterangan' => 'Pelayanan kesehatan mata',
             ],
         ];
 

@@ -10,12 +10,13 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'nama',
@@ -32,7 +33,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -74,5 +75,50 @@ class User extends Authenticatable
     public function daftarPolis()
     {
         return $this->hasMany(DaftarPoli::class, 'id_pasien');
+    }
+
+    /**
+     * Get the formatted name with role
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->nama . ' (' . ucfirst($this->role) . ')';
+    }
+
+    /**
+     * Get the role label
+     */
+    public function getRoleLabelAttribute()
+    {
+        return match($this->role) {
+            'admin' => 'Administrator',
+            'dokter' => 'Dokter',
+            'pasien' => 'Pasien',
+            default => 'Unknown'
+        };
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is dokter
+     */
+    public function isDokter()
+    {
+        return $this->role === 'dokter';
+    }
+
+    /**
+     * Check if user is pasien
+     */
+    public function isPasien()
+    {
+        return $this->role === 'pasien';
     }
 }

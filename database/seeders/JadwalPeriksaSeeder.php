@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\JadwalPeriksa;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class JadwalPeriksaSeeder extends Seeder
@@ -46,24 +45,26 @@ class JadwalPeriksaSeeder extends Seeder
 
         foreach ($dokters as $index => $dokter) {
             $jadwal = $jadwalData[$index % count($jadwalData)];
-            
+
             JadwalPeriksa::create([
                 'id_dokter' => $dokter->id,
                 'hari' => $jadwal['hari'],
                 'jam_mulai' => $jadwal['jam_mulai'],
                 'jam_selesai' => $jadwal['jam_selesai'],
+                'aktif' => 'Y',
             ]);
 
             // Add a second schedule for some doctors
             if ($index < 2) {
                 $nextIndex = ($index + 1) % count($jadwalData);
                 $nextJadwal = $jadwalData[$nextIndex];
-                
+
                 JadwalPeriksa::create([
                     'id_dokter' => $dokter->id,
                     'hari' => $nextJadwal['hari'],
                     'jam_mulai' => $nextJadwal['jam_mulai'],
                     'jam_selesai' => $nextJadwal['jam_selesai'],
+                    'aktif' => 'T',
                 ]);
             }
         }

@@ -9,6 +9,7 @@ class DaftarPoli extends Model
     protected $fillable = [
         'id_pasien',
         'id_jadwal',
+        'id_periksa',
         'keluhan',
         'no_antrian',
     ];
@@ -34,6 +35,6 @@ class DaftarPoli extends Model
      */
     public function periksa()
     {
-        return $this->hasOne(Periksa::class, 'id_daftar_poli');
+        return $this->belongsTo(Periksa::class, 'id_periksa');
     }
 }

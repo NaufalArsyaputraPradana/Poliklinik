@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,6 +14,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_pasien')->constrained('users')->cascadeOnDelete();
             $table->foreignId('id_jadwal')->constrained('jadwal_periksas')->cascadeOnDelete();
+            $table->unsignedBigInteger('id_periksa')->nullable(); // Foreign key will be added later
             $table->text('keluhan');
             $table->integer('no_antrian');
             $table->timestamps();
