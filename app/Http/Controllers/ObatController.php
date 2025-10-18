@@ -12,7 +12,8 @@ class ObatController extends Controller
      */
     public function index()
     {
-        //
+        $obats = Obat::all();
+        return view('admin.obats.index', compact('obats'));
     }
 
     /**
@@ -20,7 +21,7 @@ class ObatController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.obats.create');
     }
 
     /**
@@ -28,7 +29,19 @@ class ObatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_obat' => 'required|string|max:255',
+            'kemasan' => 'nullable|string|max:35',
+            'harga' => 'required|integer|min:0',
+        ]);
+
+        Obat::create([
+            'nama_obat' => $request->nama_obat,
+            'kemasan' => $request->kemasan,
+            'harga' => $request->harga,
+        ]);
+
+        return redirect()->route('admin.obat.index')->with('success', 'Data obat berhasil ditambahkan.');
     }
 
     /**
@@ -36,7 +49,7 @@ class ObatController extends Controller
      */
     public function show(Obat $obat)
     {
-        //
+        return view('admin.obats.show', compact('obat'));
     }
 
     /**
@@ -44,7 +57,7 @@ class ObatController extends Controller
      */
     public function edit(Obat $obat)
     {
-        //
+        return view('admin.obats.edit', compact('obat'));
     }
 
     /**
@@ -52,7 +65,19 @@ class ObatController extends Controller
      */
     public function update(Request $request, Obat $obat)
     {
-        //
+        $request->validate([
+            'nama_obat' => 'required|string|max:255',
+            'kemasan' => 'nullable|string|max:35',
+            'harga' => 'required|integer|min:0',
+        ]);
+
+        $obat->update([
+            'nama_obat' => $request->nama_obat,
+            'kemasan' => $request->kemasan,
+            'harga' => $request->harga,
+        ]);
+
+        return redirect()->route('admin.obat.index')->with('success', 'Data obat berhasil diubah.');
     }
 
     /**
@@ -60,6 +85,7 @@ class ObatController extends Controller
      */
     public function destroy(Obat $obat)
     {
-        //
+        $obat->delete();
+        return redirect()->route('admin.obat.index')->with('success', 'Data obat berhasil dihapus.');
     }
 }

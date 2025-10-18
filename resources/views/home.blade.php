@@ -238,8 +238,8 @@
                                     <i class="fas fa-user-shield fa-2x text-primary mb-2"></i>
                                     <h6 class="font-weight-bold text-primary">ADMIN</h6>
                                     <small class="text-muted">
-                                        admin@poliklinik.com<br>
-                                        <span class="badge badge-primary">admin123</span>
+                                        admin@gmail.com<br>
+                                        <span class="badge badge-primary">admin</span>
                                     </small>
                                 </div>
                             </div>
@@ -250,8 +250,8 @@
                                     <i class="fas fa-user-md fa-2x text-success mb-2"></i>
                                     <h6 class="font-weight-bold text-success">DOKTER</h6>
                                     <small class="text-muted">
-                                        dokter@poliklinik.com<br>
-                                        <span class="badge badge-success">dokter123</span>
+                                        dokter@gmail.com<br>
+                                        <span class="badge badge-success">dokter</span>
                                     </small>
                                 </div>
                             </div>
@@ -262,8 +262,8 @@
                                     <i class="fas fa-user fa-2x text-info mb-2"></i>
                                     <h6 class="font-weight-bold text-info">PASIEN</h6>
                                     <small class="text-muted">
-                                        pasien@poliklinik.com<br>
-                                        <span class="badge badge-info">pasien123</span>
+                                        pasien@gmail.com<br>
+                                        <span class="badge badge-info">pasien</span>
                                     </small>
                                 </div>
                             </div>
