@@ -12,7 +12,7 @@ class ObatController extends Controller
      */
     public function index()
     {
-        $obats = Obat::all();
+        $obats = Obat::orderBy('nama_obat', 'asc')->get();
         return view('admin.obats.index', compact('obats'));
     }
 
@@ -31,25 +31,15 @@ class ObatController extends Controller
     {
         $request->validate([
             'nama_obat' => 'required|string|max:255',
-            'kemasan' => 'nullable|string|max:35',
-            'harga' => 'required|integer|min:0',
+            'kemasan' => 'required|string|max:100',
+            'harga' => 'required|numeric|min:0',
         ]);
 
-        Obat::create([
-            'nama_obat' => $request->nama_obat,
-            'kemasan' => $request->kemasan,
-            'harga' => $request->harga,
-        ]);
+        Obat::create($request->all());
 
-        return redirect()->route('admin.obat.index')->with('success', 'Data obat berhasil ditambahkan.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Obat $obat)
-    {
-        return view('admin.obats.show', compact('obat'));
+        return redirect()->route('admin.obat.index')
+            ->with('message', 'Data Obat berhasil ditambahkan')
+            ->with('type', 'success');
     }
 
     /**
@@ -67,17 +57,15 @@ class ObatController extends Controller
     {
         $request->validate([
             'nama_obat' => 'required|string|max:255',
-            'kemasan' => 'nullable|string|max:35',
-            'harga' => 'required|integer|min:0',
+            'kemasan' => 'required|string|max:100',
+            'harga' => 'required|numeric|min:0',
         ]);
 
-        $obat->update([
-            'nama_obat' => $request->nama_obat,
-            'kemasan' => $request->kemasan,
-            'harga' => $request->harga,
-        ]);
+        $obat->update($request->all());
 
-        return redirect()->route('admin.obat.index')->with('success', 'Data obat berhasil diubah.');
+        return redirect()->route('admin.obat.index')
+            ->with('message', 'Data Obat berhasil diperbarui')
+            ->with('type', 'success');
     }
 
     /**
@@ -85,7 +73,16 @@ class ObatController extends Controller
      */
     public function destroy(Obat $obat)
     {
-        $obat->delete();
-        return redirect()->route('admin.obat.index')->with('success', 'Data obat berhasil dihapus.');
+        try {
+            $obat->delete();
+
+            return redirect()->route('admin.obat.index')
+                ->with('message', 'Data Obat berhasil dihapus')
+                ->with('type', 'success');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('message', 'Gagal menghapus data obat')
+                ->with('type', 'error');
+        }
     }
 }
