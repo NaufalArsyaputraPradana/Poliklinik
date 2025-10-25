@@ -3,13 +3,7 @@
         <div class="row">
             <div class="col-lg-12">
 
-                {{-- Alert flash message --}}
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
+                {{-- Flash messages will be handled by SweetAlert2 in the layout --}}
 
                 <h1 class="mb-4">Data Dokter</h1>
 
@@ -50,15 +44,10 @@
                                             class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i>Edit
                                         </a>
-                                        <form action="{{ route('admin.dokter.destroy', $dokter) }}" method="POST"
-                                            style="display: inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Yakin ingin menghapus dokter ini ?')">
-                                                <i class="fas fa-trash"></i> Hapus
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-danger"
+                                            onclick="confirmDelete('{{ route('admin.dokter.destroy', $dokter) }}', 'Dokter {{ $dokter->nama }}')">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -74,16 +63,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.classList.remove('show');
-                alert.classList.add('fade');
-                setTimeout(() => alert.remove(), 500);
-            }
-        }, 2000);
-    </script>
-
 </x-layouts.app>

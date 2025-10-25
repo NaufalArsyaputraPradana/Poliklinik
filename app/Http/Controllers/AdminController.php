@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Poli;
 use App\Models\User;
 use App\Models\Obat;
-use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {

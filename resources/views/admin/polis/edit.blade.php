@@ -5,7 +5,7 @@
                 <h1 class="mb-4">Edit Poli</h1>
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.polis.update', $poli) }}" method="POST">
+                        <form action="{{ route('admin.polis.update', $poli) }}" method="POST" id="editPoliForm">
                             @csrf
                             @method('PUT')
 
@@ -35,7 +35,8 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <button type="submit" class="btn btn-success">
+                                <button type="button" class="btn btn-success"
+                                    onclick="confirmSubmit('#editPoliForm', 'Apakah Anda yakin ingin mengupdate poli ini?')">
                                     <i class="fas fa-save"></i> Update
                                 </button>
                                 <a href="{{ route('admin.polis.index') }}" class="btn btn-secondary">Kembali</a>

@@ -90,7 +90,7 @@ class User extends Authenticatable
      */
     public function getRoleLabelAttribute()
     {
-        return match($this->role) {
+        return match ($this->role) {
             'admin' => 'Administrator',
             'dokter' => 'Dokter',
             'pasien' => 'Pasien',
@@ -120,5 +120,29 @@ class User extends Authenticatable
     public function isPasien()
     {
         return $this->role === 'pasien';
+    }
+
+    /**
+     * Scope to get only admin users
+     */
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    /**
+     * Scope to get only dokter users
+     */
+    public function scopeDokters($query)
+    {
+        return $query->where('role', 'dokter');
+    }
+
+    /**
+     * Scope to get only pasien users
+     */
+    public function scopePasiens($query)
+    {
+        return $query->where('role', 'pasien');
     }
 }

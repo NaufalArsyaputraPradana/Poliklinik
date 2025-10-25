@@ -12,7 +12,7 @@ return new class () extends Migration {
     {
         Schema::create('periksas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_daftar_poli'); // Foreign key will be added later
+            $table->foreignId('id_daftar_poli')->constrained('daftar_polis')->cascadeOnDelete();
             $table->dateTime('tgl_periksa');
             $table->text('catatan')->nullable();
             $table->integer('biaya_periksa');

@@ -14,7 +14,6 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('id_pasien')->constrained('users')->cascadeOnDelete();
             $table->foreignId('id_jadwal')->constrained('jadwal_periksas')->cascadeOnDelete();
-            $table->unsignedBigInteger('id_periksa')->nullable(); // Foreign key will be added later
             $table->text('keluhan');
             $table->integer('no_antrian');
             $table->timestamps();

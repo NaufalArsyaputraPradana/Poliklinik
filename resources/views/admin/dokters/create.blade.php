@@ -5,7 +5,7 @@
                 <h1 class="mb-4">Tambah Dokter</h1>
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.dokter.store') }}" method="POST">
+                        <form action="{{ route('admin.dokter.store') }}" method="POST" id="dokterForm">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -115,7 +115,8 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary"
+                                    onclick="confirmSubmit('#dokterForm', 'Apakah Anda yakin ingin menambahkan dokter ini?')">
                                     <i class="fas fa-save"></i> Simpan
                                 </button>
                                 <a href="{{ route('admin.dokter.index') }}" class="btn btn-secondary">

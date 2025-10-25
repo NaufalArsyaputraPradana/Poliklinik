@@ -8,72 +8,91 @@ use Illuminate\Support\Facades\Hash;
 
 class PasienController extends Controller
 {
-    // Dashboard untuk pasien yang login
-    public function dashboard()
-    {
-        return view('pasien.dashboard');
-    }
-
-    // CRUD untuk admin mengelola pasien
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $pasiens = User::where('role', 'pasien')->get();
+        $pasiens = User::pasiens()
+            ->orderBy('nama', 'asc')
+            ->get();
         return view('admin.pasiens.index', compact('pasiens'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('admin.pasiens.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_ktp' => 'required|string|size:16|unique:users,no_ktp',
-            'no_hp' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'alamat' => 'required|string',
+            'no_ktp' => 'required|string|max:16|unique:users',
+            'no_hp' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
         ]);
 
-        // Generate nomor RM otomatis
-        $lastPasien = User::where('role', 'pasien')->whereNotNull('no_rm')->orderBy('id', 'desc')->first();
-        $lastNumber = $lastPasien ? intval(substr($lastPasien->no_rm, 6)) : 0;
-        $newNumber = $lastNumber + 1;
-        $no_rm = 'RM' . date('Ym') . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+        // Generate no_rm otomatis
+        $lastPasien = User::pasiens()
+            ->whereNotNull('no_rm')
+            ->orderBy('no_rm', 'desc')
+            ->first();
+
+        $lastNumber = $lastPasien ? (int) substr($lastPasien->no_rm, -6) : 0;
+        $newNumber = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
+        $no_rm = date('Ym') . $newNumber;
 
         User::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_ktp' => $request->no_ktp,
             'no_hp' => $request->no_hp,
-            'no_rm' => $no_rm,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'no_rm' => $no_rm,
             'role' => 'pasien',
         ]);
 
-        return redirect()->route('admin.pasien.index')->with('success', 'Data pasien berhasil ditambahkan.');
+        return redirect()->route('admin.pasien.index')
+            ->with('message', 'Data Pasien berhasil ditambahkan')
+            ->with('type', 'success');
     }
 
-    public function edit(User $pasien)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
     {
+        $pasien = User::findOrFail($id);
         return view('admin.pasiens.edit', compact('pasien'));
     }
 
-    public function update(Request $request, User $pasien)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
     {
+        $pasien = User::findOrFail($id);
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_ktp' => 'required|string|size:16|unique:users,no_ktp,' . $pasien->id,
-            'no_hp' => 'required|string|max:20',
+            'alamat' => 'required|string',
+            'no_ktp' => 'required|string|max:16|unique:users,no_ktp,' . $pasien->id,
+            'no_hp' => 'required|string|max:15',
             'email' => 'required|string|email|max:255|unique:users,email,' . $pasien->id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:6',
         ]);
 
-        $updateData = [
+        $data = [
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_ktp' => $request->no_ktp,
@@ -81,19 +100,33 @@ class PasienController extends Controller
             'email' => $request->email,
         ];
 
-        // Update password jika diisi
         if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request->password);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $pasien->update($updateData);
+        $pasien->update($data);
 
-        return redirect()->route('admin.pasien.index')->with('success', 'Data pasien berhasil diubah.');
+        return redirect()->route('admin.pasien.index')
+            ->with('message', 'Data Pasien berhasil diperbarui')
+            ->with('type', 'success');
     }
 
-    public function destroy(User $pasien)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
     {
-        $pasien->delete();
-        return redirect()->route('admin.pasien.index')->with('success', 'Data pasien berhasil dihapus.');
+        try {
+            $pasien = User::findOrFail($id);
+            $pasien->delete();
+
+            return redirect()->route('admin.pasien.index')
+                ->with('message', 'Data Pasien berhasil dihapus')
+                ->with('type', 'success');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('message', 'Gagal menghapus data pasien')
+                ->with('type', 'error');
+        }
     }
 }

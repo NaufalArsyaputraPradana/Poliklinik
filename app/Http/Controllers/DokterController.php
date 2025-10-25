@@ -51,7 +51,9 @@ class DokterController extends Controller
             'role' => 'dokter',
         ]);
 
-        return redirect()->route('admin.dokter.index')->with('success', 'Data dokter berhasil ditambahkan.');
+        return redirect()->route('admin.dokter.index')
+            ->with('message', 'Data dokter berhasil ditambahkan')
+            ->with('type', 'success');
     }
 
     public function edit(User $dokter)
@@ -87,12 +89,23 @@ class DokterController extends Controller
 
         $dokter->update($updateData);
 
-        return redirect()->route('admin.dokter.index')->with('success', 'Data dokter berhasil diubah.');
+        return redirect()->route('admin.dokter.index')
+            ->with('message', 'Data dokter berhasil diubah')
+            ->with('type', 'success');
     }
 
     public function destroy(User $dokter)
     {
-        $dokter->delete();
-        return redirect()->route('admin.dokter.index')->with('success', 'Data dokter berhasil dihapus.');
+        try {
+            $dokter->delete();
+
+            return redirect()->route('admin.dokter.index')
+                ->with('message', 'Data dokter berhasil dihapus')
+                ->with('type', 'success');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('message', 'Gagal menghapus data dokter')
+                ->with('type', 'error');
+        }
     }
 }

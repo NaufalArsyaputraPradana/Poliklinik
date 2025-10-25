@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Poli;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
-use PDO;
 
 class PoliController extends Controller
 {
@@ -32,7 +30,9 @@ class PoliController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('admin.polis.index')->with('success', 'Poli berhasil ditambahkan');
+        return redirect()->route('admin.polis.index')
+            ->with('message', 'Poli berhasil ditambahkan')
+            ->with('type', 'success');
     }
 
     public function edit($id)
@@ -54,13 +54,24 @@ class PoliController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('admin.polis.index')->with('success', 'Poli berhasil diperbarui');
+        return redirect()->route('admin.polis.index')
+            ->with('message', 'Poli berhasil diperbarui')
+            ->with('type', 'success');
     }
 
     public function destroy($id)
     {
-        $poli = Poli::findOrFail($id);
-        $poli->delete();
-        return redirect()->route('admin.polis.index')->with('success', 'Poli berhasil dihapus');
+        try {
+            $poli = Poli::findOrFail($id);
+            $poli->delete();
+
+            return redirect()->route('admin.polis.index')
+                ->with('message', 'Poli berhasil dihapus')
+                ->with('type', 'success');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('message', 'Gagal menghapus poli')
+                ->with('type', 'error');
+        }
     }
 }

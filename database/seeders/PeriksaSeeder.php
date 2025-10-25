@@ -33,15 +33,14 @@ class PeriksaSeeder extends Seeder
         $processedDaftarPolis = $daftarPolis->take(ceil($daftarPolis->count() * 0.7));
 
         foreach ($processedDaftarPolis as $index => $daftarPoli) {
-            $periksa = Periksa::create([
+            Periksa::create([
                 'id_daftar_poli' => $daftarPoli->id,
                 'tgl_periksa' => Carbon::now()->subDays(rand(0, 7))->addHours(rand(8, 16)),
                 'catatan' => $catatanList[$index % count($catatanList)],
                 'biaya_periksa' => rand(50000, 200000),
             ]);
 
-            // Update the daftar_poli with the periksa id
-            $daftarPoli->update(['id_periksa' => $periksa->id]);
+            // No need to update daftar_poli since relationship is now one-to-one via periksa.id_daftar_poli
         }
     }
 }

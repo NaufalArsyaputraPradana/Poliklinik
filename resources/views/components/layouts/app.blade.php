@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Admin Dashboard' }}</title>
 
     @vite(['resources/js/app.js', 'resources/css/app.css'])
@@ -13,6 +14,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     @stack('styles')
 </head>
 
@@ -22,24 +25,7 @@
         <div class="content-wrapper">
             @include('components.partials.header')
 
-            <!-- Success/Error Alerts -->
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-                    <i class="fas fa-exclamation-triangle"></i> {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+            <!-- Flash messages handled by SweetAlert2 -->
 
             {{ $slot }}
         </div>
@@ -50,21 +36,186 @@
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Auto-dismiss alerts after 4 seconds
+        // SweetAlert Flash Messages
         document.addEventListener('DOMContentLoaded', function() {
+            @if (session('message'))
+                Swal.fire({
+                    icon: '{{ session('type', 'success') === 'success' ? 'success' : (session('type') === 'error' ? 'error' : 'info') }}',
+                    title: '{{ session('type', 'success') === 'success' ? 'Berhasil!' : (session('type') === 'error' ? 'Error!' : 'Informasi') }}',
+                    text: '{{ session('message') }}',
+                    showConfirmButton: true,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    confirmButtonColor: '#28a745'
+                });
+            @endif
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: true,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    confirmButtonColor: '#28a745'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ session('error') }}',
+                    showConfirmButton: true,
+                    confirmButtonColor: '#dc3545'
+                });
+            @endif
+
+            // Auto-dismiss regular alerts (fallback)
             setTimeout(function() {
                 var alerts = document.querySelectorAll('.alert-dismissible, .alert');
                 alerts.forEach(function(a) {
-                    a.classList.add('fade');
-                    if (a.classList.contains('show')) a.classList.remove('show');
-                    // remove from DOM after fade
-                    setTimeout(function() {
-                        if (a.parentNode) a.parentNode.removeChild(a);
-                    }, 400);
+                    if (a.parentNode) a.parentNode.removeChild(a);
                 });
-            }, 4000);
+            }, 100);
         });
+
+        // Global SweetAlert Functions
+        window.showSuccess = function(message) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: message,
+                showConfirmButton: true,
+                timer: 3000,
+                timerProgressBar: true,
+                confirmButtonColor: '#28a745'
+            });
+        };
+
+        window.showError = function(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: message,
+                showConfirmButton: true,
+                confirmButtonColor: '#dc3545'
+            });
+        };
+
+        window.confirmDelete = function(url, itemName = 'data ini') {
+            return Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: `Anda akan menghapus ${itemName}. Tindakan ini tidak dapat dibatalkan!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create and submit form
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+
+                    // CSRF Token
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                        'content');
+                    if (csrfToken) {
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+                    }
+
+                    // Method DELETE
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    form.appendChild(methodInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+                return result.isConfirmed;
+            });
+        };
+
+        window.confirmAction = function(title, text, confirmText = 'Ya', cancelText = 'Batal') {
+            return Swal.fire({
+                title: title,
+                text: text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#007bff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: confirmText,
+                cancelButtonText: cancelText,
+                reverseButtons: true
+            });
+        };
+
+        // Confirm form submission with validation
+        window.confirmSubmit = function(formId, title, text) {
+            const form = document.getElementById(formId);
+
+            // Basic client-side validation
+            let isValid = true;
+            let emptyFields = [];
+
+            // Check required fields
+            const requiredFields = form.querySelectorAll('input[required], textarea[required], select[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+
+                    // Get field label
+                    const label = form.querySelector(`label[for="${field.id}"]`) ||
+                        form.querySelector(`label[for="${field.name}"]`);
+                    const fieldName = label ? label.textContent.replace('*', '').trim() : field.name;
+                    emptyFields.push(fieldName);
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Belum Lengkap!',
+                    html: `Harap lengkapi field berikut:<br><strong>${emptyFields.join(', ')}</strong>`,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#ffc107'
+                });
+                return;
+            }
+
+            // If validation passed, show confirmation
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Simpan!',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        };
     </script>
 
     @stack('scripts')
