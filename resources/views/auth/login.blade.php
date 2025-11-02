@@ -1,28 +1,4 @@
 <x-layouts.guest title="Login">
-    <div class="login-box">
-        <div class="login-logo">
-            <a href="{{ url('/') }}" class="text-white" style="color:#fff;"><b>Poli</b>klinik</a>
-        </div>
-
-        <div class="card">
-            {{-- <h2>Login</h2> --}}
-{{--
-@if ($errors->any())
-    <p style="color:red">{{ $errors->first() }}</p>
-@endif --}}
-
-{{-- <form method="POST" action="{{ route('login') }}">
-    @csrf
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br>
-
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
-
-    <button type="submit">Login</button>
-</form> --}}
-
-<x-layouts.guest title="Login">
     <div class="login-box d-flex flex-column justify-content-center align-items-center w-100 vh-100">
         <div class="card card-outline card-primary">
             <div class="card-header text-center text-lg">
@@ -33,7 +9,7 @@
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Email" name="email">
+                        <input type="text" class="form-control" placeholder="Email" name="email" value="{{ old('email') }}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -50,12 +26,20 @@
                     </div>
 
                     @if ($errors->any())
-                        <p class="alert alert-danger">{{ $errors->first() }}</p>
+                        <div class="alert alert-danger">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+
+                    @if (session('message'))
+                        <div class="alert alert-success">
+                            {{ session('message') }}
+                        </div>
                     @endif
 
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block" name="submit">Login</button>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
                         </div>
                     </div>
                 </form>
@@ -69,4 +53,3 @@
         </div>
     </div>
 </x-layouts.guest>
-\
