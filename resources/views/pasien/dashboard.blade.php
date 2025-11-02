@@ -143,7 +143,7 @@
                 <div class="col-lg-4 col-6">
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>{{ \App\Models\DaftarPoli::where('id_pasien', Auth::id())->whereNull('id_periksa')->count() }}
+                            <h3>{{ \App\Models\DaftarPoli::where('id_pasien', Auth::id())->whereDoesntHave('periksa')->count() }}
                             </h3>
                             <p>Jadwal Mendatang</p>
                         </div>
@@ -222,14 +222,14 @@
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                                     <span><i class="fas fa-stethoscope text-success mr-2"></i>Pemeriksaan Selesai</span>
                                     <span class="badge badge-success badge-pill">
-                                        {{ \App\Models\DaftarPoli::where('id_pasien', Auth::id())->whereNotNull('id_periksa')->count() }}
+                                        {{ \App\Models\DaftarPoli::where('id_pasien', Auth::id())->whereHas('periksa')->count() }}
                                     </span>
                                 </div>
                                 <div
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                                     <span><i class="fas fa-clock text-warning mr-2"></i>Menunggu Pemeriksaan</span>
                                     <span class="badge badge-warning badge-pill">
-                                        {{ \App\Models\DaftarPoli::where('id_pasien', Auth::id())->whereNull('id_periksa')->count() }}
+                                        {{ \App\Models\DaftarPoli::where('id_pasien', Auth::id())->whereDoesntHave('periksa')->count() }}
                                     </span>
                                 </div>
                                 <div

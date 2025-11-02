@@ -184,7 +184,7 @@
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                                     <span><i class="fas fa-users text-success mr-2"></i>Pasien Menunggu</span>
                                     <span class="badge badge-success badge-pill">
-                                        {{ \App\Models\DaftarPoli::whereHas('jadwalPeriksa', function ($q) {$q->where('id_dokter', Auth::id());})->whereNull('id_periksa')->count() }}
+                                        {{ \App\Models\DaftarPoli::whereHas('jadwalPeriksa', function ($q) {$q->where('id_dokter', Auth::id());})->whereDoesntHave('periksa')->count() }}
                                     </span>
                                 </div>
                             </div>

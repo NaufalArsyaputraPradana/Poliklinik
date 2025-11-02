@@ -94,7 +94,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('pasien.daftar.create') }}"
+                        <a href="{{ route('pasien.daftar.index') }}"
                             class="nav-link {{ request()->routeIs('pasien.daftar.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-hospital-user"></i>
                             <p>
