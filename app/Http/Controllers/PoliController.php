@@ -7,22 +7,31 @@ use Illuminate\Http\Request;
 
 class PoliController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $polis = Poli::all();
+        $polis = Poli::orderBy('nama_poli', 'asc')->get();
         return view('admin.polis.index', compact('polis'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('admin.polis.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'nama_poli' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
+            'nama_poli' => 'required|string|max:25|unique:polis,nama_poli',
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
         Poli::create([
@@ -30,48 +39,41 @@ class PoliController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('admin.polis.index')
-            ->with('message', 'Poli berhasil ditambahkan')
-            ->with('type', 'success');
+        return redirect()->route('admin.polis.index')->with('message', 'Poli berhasil ditambahkan')->with('type', 'success');
     }
 
-    public function edit($id)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Poli $poli)
     {
-        $poli = Poli::findOrFail($id);
         return view('admin.polis.edit', compact('poli'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Poli $poli)
     {
         $request->validate([
-            'nama_poli' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
+            'nama_poli' => 'required|string|max:25|unique:polis,nama_poli,' . $poli->id,
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
-        $poli = Poli::findOrFail($id);
         $poli->update([
             'nama_poli' => $request->nama_poli,
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('admin.polis.index')
-            ->with('message', 'Poli berhasil diperbarui')
-            ->with('type', 'success');
+        return redirect()->route('admin.polis.index')->with('message', 'Poli berhasil diperbarui')->with('type', 'success');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Poli $poli)
     {
-        try {
-            $poli = Poli::findOrFail($id);
-            $poli->delete();
-
-            return redirect()->route('admin.polis.index')
-                ->with('message', 'Poli berhasil dihapus')
-                ->with('type', 'success');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('message', 'Gagal menghapus poli')
-                ->with('type', 'error');
-        }
+        $poli->delete();
+        return redirect()->route('admin.polis.index')->with('message', 'Poli berhasil dihapus')->with('type', 'success');
     }
 }

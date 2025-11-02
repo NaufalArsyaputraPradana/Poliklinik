@@ -6,23 +6,21 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the login form
-     */
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle login attempt
-     */
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -37,50 +35,46 @@ class AuthController extends Controller
             }
         }
 
-        return back()->withErrors(['email' => 'Email atau Password Salah !']);
+        return back()->withErrors(['email' => 'Email atau Password Salah!']);
     }
 
-    /**
-     * Handle logout
-     */
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        return redirect()->route('login');
-    }
-
-    /**
-     * Show the registration form
-     */
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle registration
-     */
     public function register(Request $request)
     {
         $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string', 'max:255'],
-            'no_ktp' => ['required', 'string', 'max:30'],
+            'no_ktp' => ['required', 'string', 'max:30', 'unique:users,no_ktp'],
             'no_hp' => ['required', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed'],
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
+
+        $prefix = date('Ym');
+        $count = User::where('no_rm', 'like', $prefix . '-%')->count();
+        $no_rm = $prefix . '-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
 
         User::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_ktp' => $request->no_ktp,
             'no_hp' => $request->no_hp,
+            'no_rm' => $no_rm,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'pasien',
         ]);
 
+        return redirect()->route('login')->with('message', 'Pendaftaran berhasil. Silakan login.');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
         return redirect()->route('login');
     }
 }

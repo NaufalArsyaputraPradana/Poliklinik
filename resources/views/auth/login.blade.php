@@ -5,82 +5,68 @@
         </div>
 
         <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Masuk untuk memulai sesi Anda</p>
+            {{-- <h2>Login</h2> --}}
+{{--
+@if ($errors->any())
+    <p style="color:red">{{ $errors->first() }}</p>
+@endif --}}
 
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
+{{-- <form method="POST" action="{{ route('login') }}">
+    @csrf
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br>
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+    <label>Password:</label><br>
+    <input type="password" name="password" required><br><br>
 
+    <button type="submit">Login</button>
+</form> --}}
+
+<x-layouts.guest title="Login">
+    <div class="login-box d-flex flex-column justify-content-center align-items-center w-100 vh-100">
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center text-lg">
+                <b>Poli</b>klinik
+            </div>
+            <div class="card-body">
+                <p class="login-box-msg">Login ke akun anda</p>
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
-
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" name="email"
-                            placeholder="Email" required value="{{ old('email') }}">
+                        <input type="text" class="form-control" placeholder="Email" name="email">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
-                        @error('email')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
                     </div>
-
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            name="password" placeholder="Password" required>
+                        <input type="password" class="form-control" placeholder="Password" name="password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
-                        @error('password')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
                     </div>
 
+                    @if ($errors->any())
+                        <p class="alert alert-danger">{{ $errors->first() }}</p>
+                    @endif
+
                     <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                <input type="checkbox" id="remember" name="remember">
-                                <label for="remember">
-                                    Ingat Saya
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fas fa-sign-in-alt mr-2"></i>Masuk
-                            </button>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block" name="submit">Login</button>
                         </div>
                     </div>
                 </form>
 
-                <p class="mb-1">
-                    <a href="{{ route('register') }}">Daftar sebagai anggota baru</a>
-                </p>
-                <p class="mb-0">
-                    <a href="{{ url('/') }}" class="text-center">Kembali ke Beranda</a>
-                </p>
+                <div class="row mt-3 justify-content-center">
+                    <div class="col-12 text-center">
+                        <span>Belum punya akun? <a href="{{ route('register') }}">Register</a></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </x-layouts.guest>
+\

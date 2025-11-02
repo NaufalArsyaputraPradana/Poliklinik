@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Hash;
 class PasienController extends Controller
 {
     /**
+     * Dashboard untuk pasien yang login
+     */
+    public function dashboard()
+    {
+        return view('pasien.dashboard');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()

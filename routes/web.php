@@ -7,10 +7,11 @@ use App\Http\Controllers\{
     PasienController,
     PoliController,
     ObatController,
-    JadwalPeriksaController,
     PeriksaController,
     DaftarPoliController
 };
+use App\Http\Controllers\Dokter\JadwalPeriksaController;
+use App\Http\Controllers\Pasien\PoliController as PasienPoliController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -79,8 +80,8 @@ Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->name('pasien.')->g
 
     // Poli Registration
     Route::prefix('daftar')->name('daftar.')->group(function () {
-        Route::get('/', [DaftarPoliController::class, 'create'])->name('create');
-        Route::post('/', [DaftarPoliController::class, 'store'])->name('store');
+        Route::get('/', [PasienPoliController::class, 'get'])->name('index');
+        Route::post('/', [PasienPoliController::class, 'submit'])->name('submit');
     });
 
     // Medical History
