@@ -152,9 +152,5 @@
                 </li>
             </ul>
         </nav>
-        {{-- <form method="POST" action="/logout" class="btn btn-danger ml-4">
-            @csrf
-            <button>Keluar</button>
-        </form> --}}
     </div>
 </aside>

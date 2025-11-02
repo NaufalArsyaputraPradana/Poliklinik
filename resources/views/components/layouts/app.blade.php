@@ -32,9 +32,11 @@
         @include('components.partials.footer')
     </div>
 
+    <!-- jQuery (required for AdminLTE) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- AdminLTE JS -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -77,9 +79,11 @@
 
             // Auto-dismiss regular alerts (fallback)
             setTimeout(function() {
-                var alerts = document.querySelectorAll('.alert-dismissible, .alert');
-                alerts.forEach(function(a) {
-                    if (a.parentNode) a.parentNode.removeChild(a);
+                const alerts = document.querySelectorAll('.alert-dismissible, .alert');
+                alerts.forEach(function(alert) {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
                 });
             }, 100);
         });
@@ -124,16 +128,26 @@
                     const form = document.createElement('form');
                     form.method = 'POST';
                     form.action = url;
+                    form.style.display = 'none';
 
                     // CSRF Token
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
-                        'content');
+                    'content');
                     if (csrfToken) {
                         const csrfInput = document.createElement('input');
                         csrfInput.type = 'hidden';
                         csrfInput.name = '_token';
                         csrfInput.value = csrfToken;
                         form.appendChild(csrfInput);
+                    } else {
+                        console.error('CSRF token not found');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'CSRF token tidak ditemukan. Silakan refresh halaman.',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        return false;
                     }
 
                     // Method DELETE
@@ -166,7 +180,20 @@
 
         // Confirm form submission with validation
         window.confirmSubmit = function(formId, title, text) {
-            const form = document.getElementById(formId);
+            // Handle formId with or without # prefix
+            const cleanFormId = formId.startsWith('#') ? formId.substring(1) : formId;
+            const form = document.getElementById(cleanFormId);
+
+            if (!form) {
+                console.error('Form not found:', formId);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Form tidak ditemukan. Silakan coba lagi.',
+                    confirmButtonColor: '#dc3545'
+                });
+                return;
+            }
 
             // Basic client-side validation
             let isValid = true;
