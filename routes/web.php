@@ -8,18 +8,18 @@ use App\Http\Controllers\{
     PoliController,
     ObatController,
     PeriksaController,
-    DaftarPoliController
+    DaftarPoliController,
+    HomeController
 };
 use App\Http\Controllers\Dokter\JadwalPeriksaController;
 use App\Http\Controllers\Pasien\PoliController as PasienPoliController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /**
  * Public Routes
  */
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 /**
  * Authentication Routes
