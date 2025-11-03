@@ -94,11 +94,20 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('pasien.daftar.index') }}"
-                            class="nav-link {{ request()->routeIs('pasien.daftar.*') ? 'active' : '' }}">
+                        <a href="{{ route('pasien.daftar-poli') }}"
+                            class="nav-link {{ request()->routeIs('pasien.daftar-poli') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-hospital-user"></i>
                             <p>
-                                Poli
+                                Daftar Poli
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('pasien.riwayat') }}"
+                            class="nav-link {{ request()->routeIs('pasien.riwayat') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-history"></i>
+                            <p>
+                                Riwayat Pendaftaran
                             </p>
                         </a>
                     </li>

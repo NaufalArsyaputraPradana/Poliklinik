@@ -3,28 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Model Obat - Data obat-obatan
+ */
 class Obat extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'nama_obat',
         'kemasan',
-        'harga',
+        'harga'
     ];
 
-    /**
-     * Get the detail periksas for the obat.
-     */
-    public function detailPeriksas()
+    protected $casts = [
+        'harga' => 'integer'
+    ];
+
+    public function detailPeriksa()
     {
         return $this->hasMany(DetailPeriksa::class, 'id_obat');
-    }
-
-    /**
-     * Get the periksas through detail periksas.
-     */
-    public function periksas()
-    {
-        return $this->belongsToMany(Periksa::class, 'detail_periksas', 'id_obat', 'id_periksa');
     }
 }

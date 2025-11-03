@@ -3,34 +3,34 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Model JadwalPeriksa - Jadwal praktek dokter
+ */
 class JadwalPeriksa extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'id_dokter',
         'hari',
         'jam_mulai',
         'jam_selesai',
-        'aktif',
+        'aktif'
     ];
 
     protected $casts = [
-        'jam_mulai' => 'datetime:H:i',
-        'jam_selesai' => 'datetime:H:i',
+        'aktif' => 'boolean'
     ];
 
-    /**
-     * Get the dokter that owns the jadwal periksa.
-     */
+    // Relasi
     public function dokter()
     {
         return $this->belongsTo(User::class, 'id_dokter');
     }
 
-    /**
-     * Get the daftar polis for the jadwal periksa.
-     */
-    public function daftarPolis()
+    public function daftarPoli()
     {
         return $this->hasMany(DaftarPoli::class, 'id_jadwal');
     }

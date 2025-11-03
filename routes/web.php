@@ -78,11 +78,9 @@ Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->name('pasien.')->g
     Route::get('/', [PasienController::class, 'index'])->name('index');
     Route::get('/dashboard', [PasienController::class, 'dashboard'])->name('dashboard');
 
-    // Poli Registration
-    Route::prefix('daftar')->name('daftar.')->group(function () {
-        Route::get('/', [PasienPoliController::class, 'get'])->name('index');
-        Route::post('/', [PasienPoliController::class, 'submit'])->name('submit');
-    });
+    // Poli Registration - Sesuai instruksi Tugas 5
+    Route::get('/daftar-poli', [DaftarPoliController::class, 'get'])->name('daftar-poli');
+    Route::post('/daftar-poli', [DaftarPoliController::class, 'submit'])->name('daftar-poli.submit');
 
     // Medical History
     Route::get('/riwayat', [DaftarPoliController::class, 'index'])->name('riwayat');

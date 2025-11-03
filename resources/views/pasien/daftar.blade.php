@@ -30,14 +30,20 @@
                                     </div>
                                 @endif
 
-                                <form action="{{ route('pasien.daftar.submit') }}" method="POST">
+                                <form action="{{ route('pasien.daftar-poli.submit') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="id_pasien" value="{{ $user->id }}">
+                                    <input type="hidden" name="id_pasien" value="{{ $pasien->id }}">
 
                                     <div class="mb-3">
                                         <label for="no_rm" class="form-label">Nomor Rekam Medis</label>
                                         <input type="text" class="form-control" id="no_rm"
-                                            value="{{ $user->no_rm }}" readonly>
+                                            value="{{ $pasien->no_rm }}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="nama_pasien" class="form-label">Nama Pasien</label>
+                                        <input type="text" class="form-control" id="nama_pasien"
+                                            value="{{ $pasien->nama }}" readonly>
                                     </div>
 
                                     <div class="mb-3">

@@ -1,270 +1,241 @@
-<x-layouts.sb-admin title="Selamat Datang - Poliklinik">
+<x-layouts.auth title="Selamat Datang">
     @push('styles')
         <style>
-            .hero-section {
-                height: 100vh;
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+
+            .welcome-section {
+                min-height: 100vh;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                position: relative;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 2rem 0;
             }
 
-            .hero-content {
-                text-align: center;
+            .welcome-card {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 1.5rem;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+                overflow: hidden;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .hero-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
-                max-width: 800px;
-                padding: 40px;
-                padding-bottom: 60px;
+                padding: 3rem 2rem;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+                animation: float 20s linear infinite;
             }
 
             .hero-title {
-                font-size: 3.5rem;
-                font-weight: 700;
+                font-size: 3rem;
+                font-weight: 800;
                 margin-bottom: 1rem;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+                position: relative;
+                z-index: 2;
             }
 
             .hero-subtitle {
-                font-size: 1.4rem;
-                margin-bottom: 2rem;
-                opacity: 0.9;
+                font-size: 1.3rem;
+                opacity: 0.95;
+                margin-bottom: 0;
+                position: relative;
+                z-index: 2;
             }
 
-            .hero-description {
-                font-size: 1.1rem;
-                margin-bottom: 3rem;
-                opacity: 0.8;
-                line-height: 1.6;
+            .auth-options {
+                padding: 2.5rem;
             }
 
-            .auth-section {
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                padding: 40px 0 20px 0;
-            }
-
-            .auth-card {
-                background: white;
-                border-radius: 20px;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-                overflow: hidden;
-                transition: transform 0.3s ease;
-            }
-
-            .auth-card:hover {
-                transform: translateY(-5px);
-            }
-
-            .auth-option {
-                padding: 40px;
+            .auth-card-option {
+                background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
+                border: 2px solid #e3e6f0;
+                border-radius: 1rem;
+                padding: 2rem;
                 text-align: center;
                 transition: all 0.3s ease;
+                height: 100%;
+                position: relative;
+                overflow: hidden;
             }
 
-            .auth-option:hover {
-                background: #f8f9fa;
+            .auth-card-option::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+                transition: left 0.5s;
+            }
+
+            .auth-card-option:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+                border-color: #667eea;
+            }
+
+            .auth-card-option:hover::before {
+                left: 100%;
             }
 
             .auth-icon {
-                font-size: 3rem;
-                margin-bottom: 20px;
-                color: #667eea;
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                display: block;
             }
 
             .auth-title {
-                font-size: 1.5rem;
-                font-weight: 600;
-                margin-bottom: 15px;
-                color: #333;
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #5a5c69;
+                margin-bottom: 1rem;
             }
 
             .auth-description {
-                color: #666;
-                margin-bottom: 25px;
+                color: #6c757d;
+                margin-bottom: 1.5rem;
                 line-height: 1.6;
+                font-size: 0.95rem;
             }
 
-            .auth-btn {
+            .btn-auth {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 border: none;
-                border-radius: 25px;
-                padding: 12px 30px;
+                border-radius: 50px;
+                padding: 0.8rem 2rem;
                 color: white;
+                font-weight: 600;
                 text-decoration: none;
                 transition: all 0.3s ease;
                 display: inline-block;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             }
 
-            .auth-btn:hover {
+            .btn-auth:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
                 color: white;
                 text-decoration: none;
             }
 
-            .demo-section {
-                background: #ffffff;
-                padding: 30px;
-                border-radius: 15px;
-                margin-top: 20px;
-                margin-bottom: 0;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            }
 
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .floating-shapes {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                z-index: 1;
-            }
-
-            .floating-shapes::before,
-            .floating-shapes::after {
-                content: '';
-                position: absolute;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 50%;
-                animation: float 6s ease-in-out infinite;
-            }
-
-            .floating-shapes::before {
-                width: 200px;
-                height: 200px;
-                top: 20%;
-                right: 10%;
-                animation-delay: -2s;
-            }
-
-            .floating-shapes::after {
-                width: 150px;
-                height: 150px;
-                bottom: 20%;
-                left: 10%;
-                animation-delay: -4s;
-            }
 
             @keyframes float {
 
                 0%,
                 100% {
-                    transform: translateY(0px);
+                    transform: translateX(0);
                 }
 
                 50% {
-                    transform: translateY(-20px);
+                    transform: translateX(-20px);
                 }
+            }
+
+            .floating-elements {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .floating-elements::before,
+            .floating-elements::after {
+                content: '';
+                position: absolute;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 50%;
+                animation: float 8s ease-in-out infinite;
+            }
+
+            .floating-elements::before {
+                width: 300px;
+                height: 300px;
+                top: 10%;
+                right: 10%;
+                animation-delay: -2s;
+            }
+
+            .floating-elements::after {
+                width: 200px;
+                height: 200px;
+                bottom: 10%;
+                left: 10%;
+                animation-delay: -4s;
             }
         </style>
     @endpush
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero-section">
-        <div class="floating-shapes"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <i class="fas fa-hospital-alt mr-3"></i>Poliklinik
-            </h1>
-            <p class="hero-subtitle">Sistem Manajemen Klinik Digital</p>
-            <p class="hero-description">
-                Platform terintegrasi untuk manajemen poliklinik modern. Kelola pasien, dokter, jadwal, dan layanan
-                kesehatan dengan mudah dan efisien.
-            </p>
-        </div>
-    </section>
+    <div class="floating-elements"></div>
 
-    <!-- Auth Section -->
-    <section id="auth" class="auth-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="auth-card">
-                        <div class="auth-option">
-                            <i class="fas fa-sign-in-alt auth-icon"></i>
-                            <h3 class="auth-title">Masuk ke Sistem</h3>
-                            <p class="auth-description">
-                                Sudah memiliki akun? Masuk sebagai Admin, Dokter, atau Pasien untuk mengakses dashboard
-                                Anda.
-                            </p>
-                            <a href="{{ route('login') }}" class="auth-btn">
-                                <i class="fas fa-sign-in-alt mr-2"></i>Login
-                            </a>
-                        </div>
+    <div class="welcome-section">
+        <div class="row justify-content-center w-100">
+            <div class="col-xl-10 col-lg-12">
+                <div class="welcome-card">
+                    <!-- Hero Header -->
+                    <div class="hero-header">
+                        <h1 class="hero-title">
+                            <i class="fas fa-hospital-alt mr-3"></i>Poliklinik Digital
+                        </h1>
+                        <p class="hero-subtitle">
+                            Sistem Manajemen Klinik Terintegrasi
+                        </p>
                     </div>
-                </div>
 
-                <div class="col-lg-6 mb-4">
-                    <div class="auth-card">
-                        <div class="auth-option">
-                            <i class="fas fa-user-plus auth-icon"></i>
-                            <h3 class="auth-title">Daftar Sebagai Pasien</h3>
-                            <p class="auth-description">
-                                Belum memiliki akun? Daftarkan diri Anda sebagai pasien baru untuk mulai menggunakan
-                                layanan kami.
-                            </p>
-                            <a href="{{ route('register') }}" class="auth-btn">
-                                <i class="fas fa-user-plus mr-2"></i>Daftar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Demo Section -->
-            <div class="demo-section">
-                <div class="text-center">
-                    <h4 class="mb-1">
-                        <i class="fas fa-users mr-2"></i>Demo Login
-                    </h4>
-                    <p class="text-muted mb-2">Gunakan akun demo berikut untuk mencoba sistem:</p>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-left-primary h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-user-shield fa-2x text-primary mb-2"></i>
-                                    <h6 class="font-weight-bold text-primary">ADMIN</h6>
-                                    <small class="text-muted">
-                                        admin@gmail.com<br>
-                                        <span class="badge badge-primary">admin</span>
-                                    </small>
+                    <!-- Auth Options -->
+                    <div class="auth-options">
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <div class="auth-card-option">
+                                    <i class="fas fa-sign-in-alt auth-icon"></i>
+                                    <h3 class="auth-title">Masuk ke Sistem</h3>
+                                    <p class="auth-description">
+                                        Sudah memiliki akun? Masuk sebagai Admin, Dokter, atau Pasien untuk mengakses
+                                        dashboard Anda.
+                                    </p>
+                                    <a href="{{ route('login') }}" class="btn-auth">
+                                        <i class="fas fa-sign-in-alt mr-2"></i>Login Sekarang
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-left-success h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-user-md fa-2x text-success mb-2"></i>
-                                    <h6 class="font-weight-bold text-success">DOKTER</h6>
-                                    <small class="text-muted">
-                                        dokter@gmail.com<br>
-                                        <span class="badge badge-success">dokter</span>
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-left-info h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-user fa-2x text-info mb-2"></i>
-                                    <h6 class="font-weight-bold text-info">PASIEN</h6>
-                                    <small class="text-muted">
-                                        pasien@gmail.com<br>
-                                        <span class="badge badge-info">pasien</span>
-                                    </small>
+
+                            <div class="col-lg-6 mb-4">
+                                <div class="auth-card-option">
+                                    <i class="fas fa-user-plus auth-icon"></i>
+                                    <h3 class="auth-title">Daftar Sebagai Pasien</h3>
+                                    <p class="auth-description">
+                                        Belum memiliki akun? Daftarkan diri Anda sebagai pasien baru untuk mulai
+                                        menggunakan layanan kami.
+                                    </p>
+                                    <a href="{{ route('register') }}" class="btn-auth">
+                                        <i class="fas fa-user-plus mr-2"></i>Daftar Sekarang
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -272,30 +243,5 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    @push('scripts')
-        <script>
-            // Smooth scrolling animation observer
-            document.addEventListener('DOMContentLoaded', function() {
-                const observerOptions = {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-
-                const observer = new IntersectionObserver(function(entries) {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.style.animation = 'fadeInUp 0.6s ease-out';
-                        }
-                    });
-                }, observerOptions);
-
-                // Observe auth cards
-                document.querySelectorAll('.auth-card').forEach(card => {
-                    observer.observe(card);
-                });
-            });
-        </script>
-    @endpush
-</x-layouts.sb-admin>
+    </div>
+</x-layouts.auth>
