@@ -29,7 +29,7 @@
                                     <td>{{ $poli->keterangan }}</td>
                                     <td>
                                         <a href="{{ route('admin.polis.edit', $poli) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i>Edit
+                                            <i class="fas fa-edit"></i> Edit
                                         </a>
                                         <button class="btn btn-sm btn-danger"
                                             onclick="confirmDelete('{{ route('admin.polis.destroy', $poli) }}', 'Poli {{ $poli->nama_poli }}')">
