@@ -1,245 +1,386 @@
-<x-layouts.auth title="Selamat Datang">
+<x-layouts.auth title="Home">
     @push('styles')
         <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            /* Override container default */
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+
             body {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
                 min-height: 100vh;
-            }
-
-            .welcome-section {
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 2rem 0;
-            }
-
-            .welcome-card {
-                background: rgba(255, 255, 255, 0.95);
-                border-radius: 1.5rem;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-                overflow: hidden;
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-
-            .hero-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 3rem 2rem;
-                text-align: center;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 position: relative;
-                overflow: hidden;
+                overflow-x: hidden;
             }
 
-            .hero-header::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                right: -50%;
-                width: 200%;
-                height: 200%;
-                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-                animation: float 20s linear infinite;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-                font-weight: 800;
-                margin-bottom: 1rem;
-                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-                position: relative;
-                z-index: 2;
-            }
-
-            .hero-subtitle {
-                font-size: 1.3rem;
-                opacity: 0.95;
-                margin-bottom: 0;
-                position: relative;
-                z-index: 2;
-            }
-
-            .auth-options {
-                padding: 2.5rem;
-            }
-
-            .auth-card-option {
-                background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
-                border: 2px solid #e3e6f0;
-                border-radius: 1rem;
-                padding: 2rem;
-                text-align: center;
-                transition: all 0.3s ease;
-                height: 100%;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .auth-card-option::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
+            .animated-bg {
+                position: fixed;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
-                transition: left 0.5s;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                overflow: hidden;
             }
 
-            .auth-card-option:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
-                border-color: #667eea;
+            .shape {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                animation: float 20s infinite ease-in-out;
             }
 
-            .auth-card-option:hover::before {
-                left: 100%;
+            .shape:nth-child(1) {
+                width: 80px;
+                height: 80px;
+                top: 10%;
+                left: 10%;
+                animation-delay: 0s;
             }
 
-            .auth-icon {
-                font-size: 4rem;
-                margin-bottom: 1.5rem;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                display: block;
+            .shape:nth-child(2) {
+                width: 120px;
+                height: 120px;
+                top: 70%;
+                left: 80%;
+                animation-delay: 2s;
             }
 
-            .auth-title {
-                font-size: 1.4rem;
-                font-weight: 700;
-                color: #5a5c69;
-                margin-bottom: 1rem;
+            .shape:nth-child(3) {
+                width: 100px;
+                height: 100px;
+                top: 40%;
+                left: 70%;
+                animation-delay: 4s;
             }
 
-            .auth-description {
-                color: #6c757d;
-                margin-bottom: 1.5rem;
-                line-height: 1.6;
-                font-size: 0.95rem;
+            .shape:nth-child(4) {
+                width: 60px;
+                height: 60px;
+                top: 80%;
+                left: 20%;
+                animation-delay: 1s;
             }
-
-            .btn-auth {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                border: none;
-                border-radius: 50px;
-                padding: 0.8rem 2rem;
-                color: white;
-                font-weight: 600;
-                text-decoration: none;
-                transition: all 0.3s ease;
-                display: inline-block;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            }
-
-            .btn-auth:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-                color: white;
-                text-decoration: none;
-            }
-
-
 
             @keyframes float {
 
                 0%,
                 100% {
-                    transform: translateX(0);
+                    transform: translateY(0) translateX(0);
                 }
 
-                50% {
-                    transform: translateX(-20px);
+                33% {
+                    transform: translateY(-30px) translateX(30px);
+                }
+
+                66% {
+                    transform: translateY(-60px) translateX(-20px);
                 }
             }
 
-            .floating-elements {
-                position: fixed;
+            .container {
+                position: relative;
+                z-index: 10;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1rem;
+            }
+
+            .hero-section {
+                max-width: 1200px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .logo-container {
+                margin-bottom: 2rem;
+                animation: fadeInDown 0.8s ease-out;
+            }
+
+            .logo-icon {
+                width: 100px;
+                height: 100px;
+                background: white;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 3rem;
+                color: #11998e;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                margin-bottom: 1rem;
+            }
+
+            .main-title {
+                font-size: 3.5rem;
+                font-weight: 900;
+                color: white;
+                margin-bottom: 1rem;
+                text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                animation: fadeInDown 0.8s ease-out 0.2s both;
+            }
+
+            .subtitle {
+                font-size: 1.5rem;
+                color: rgba(255, 255, 255, 0.95);
+                margin-bottom: 3rem;
+                animation: fadeInDown 0.8s ease-out 0.4s both;
+            }
+
+            .cards-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-bottom: 3rem;
+            }
+
+            .action-card {
+                background: white;
+                border-radius: 20px;
+                padding: 3rem 2rem;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                animation: fadeInUp 0.8s ease-out both;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .action-card:nth-child(1) {
+                animation-delay: 0.6s;
+            }
+
+            .action-card:nth-child(2) {
+                animation-delay: 0.8s;
+            }
+
+            .action-card::before {
+                content: '';
+                position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
-                pointer-events: none;
-                z-index: 1;
+                height: 5px;
+                background: linear-gradient(90deg, #11998e, #38ef7d);
             }
 
-            .floating-elements::before,
-            .floating-elements::after {
-                content: '';
-                position: absolute;
-                background: rgba(255, 255, 255, 0.05);
+            .action-card:hover {
+                transform: translateY(-15px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            }
+
+            .card-icon {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
                 border-radius: 50%;
-                animation: float 8s ease-in-out infinite;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+                font-size: 2.5rem;
+                color: white;
             }
 
-            .floating-elements::before {
-                width: 300px;
-                height: 300px;
-                top: 10%;
-                right: 10%;
-                animation-delay: -2s;
+            .card-title {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 1rem;
             }
 
-            .floating-elements::after {
-                width: 200px;
-                height: 200px;
-                bottom: 10%;
-                left: 10%;
-                animation-delay: -4s;
+            .card-description {
+                color: #666;
+                margin-bottom: 2rem;
+                line-height: 1.6;
+            }
+
+            .card-btn {
+                display: inline-block;
+                padding: 1rem 3rem;
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+                color: white;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1.1rem;
+                transition: all 0.3s;
+                box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+            }
+
+            .card-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 40px rgba(17, 153, 142, 0.6);
+                color: white;
+                text-decoration: none;
+            }
+
+            .features-showcase {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-top: 3rem;
+                animation: fadeInUp 0.8s ease-out 1s both;
+            }
+
+            .feature-item {
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(10px);
+                border-radius: 15px;
+                padding: 1.5rem;
+                text-align: center;
+                color: white;
+                transition: all 0.3s;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .feature-item:hover {
+                background: rgba(255, 255, 255, 0.25);
+                transform: translateY(-5px);
+            }
+
+            .feature-item i {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+            .feature-item h4 {
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.3rem;
+            }
+
+            .feature-item p {
+                font-size: 0.85rem;
+                opacity: 0.9;
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .main-title {
+                    font-size: 2.5rem;
+                }
+
+                .subtitle {
+                    font-size: 1.2rem;
+                }
+
+                .cards-container {
+                    grid-template-columns: 1fr;
+                }
+
+                .features-showcase {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 576px) {
+                .main-title {
+                    font-size: 2rem;
+                }
+
+                .logo-icon {
+                    width: 80px;
+                    height: 80px;
+                    font-size: 2.5rem;
+                }
             }
         </style>
     @endpush
 
-    <div class="floating-elements"></div>
+    <div class="animated-bg">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
 
-    <div class="welcome-section">
-        <div class="row justify-content-center w-100">
-            <div class="col-xl-10 col-lg-12">
-                <div class="welcome-card">
-                    <!-- Hero Header -->
-                    <div class="hero-header">
-                        <h1 class="hero-title">
-                            <i class="fas fa-hospital-alt mr-3"></i>Poliklinik Digital
-                        </h1>
-                        <p class="hero-subtitle">
-                            Sistem Manajemen Klinik Terintegrasi
-                        </p>
+    <div class="container">
+        <div class="hero-section">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-hospital"></i>
+                </div>
+            </div>
+
+            <h1 class="main-title">Sistem Poliklinik</h1>
+            <p class="subtitle">Layanan Kesehatan Modern dan Profesional</p>
+
+            <div class="cards-container">
+                <div class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-sign-in-alt"></i>
                     </div>
+                    <h3 class="card-title">Sudah Punya Akun?</h3>
+                    <p class="card-description">Login untuk mengakses layanan poliklinik sebagai pasien atau dokter</p>
+                    <a href="{{ route('login') }}" class="card-btn">Masuk Sekarang</a>
+                </div>
 
-                    <!-- Auth Options -->
-                    <div class="auth-options">
-                        <div class="row">
-                            <div class="col-lg-6 mb-4">
-                                <div class="auth-card-option">
-                                    <i class="fas fa-sign-in-alt auth-icon"></i>
-                                    <h3 class="auth-title">Masuk ke Sistem</h3>
-                                    <p class="auth-description">
-                                        Sudah memiliki akun? Masuk sebagai Admin, Dokter, atau Pasien untuk mengakses
-                                        dashboard Anda.
-                                    </p>
-                                    <a href="{{ route('login') }}" class="btn-auth">
-                                        <i class="fas fa-sign-in-alt mr-2"></i>Login Sekarang
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 mb-4">
-                                <div class="auth-card-option">
-                                    <i class="fas fa-user-plus auth-icon"></i>
-                                    <h3 class="auth-title">Daftar Sebagai Pasien</h3>
-                                    <p class="auth-description">
-                                        Belum memiliki akun? Daftarkan diri Anda sebagai pasien baru untuk mulai
-                                        menggunakan layanan kami.
-                                    </p>
-                                    <a href="{{ route('register') }}" class="btn-auth">
-                                        <i class="fas fa-user-plus mr-2"></i>Daftar Sekarang
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                <div class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-plus"></i>
                     </div>
+                    <h3 class="card-title">Pasien Baru?</h3>
+                    <p class="card-description">Daftar sekarang untuk mendapatkan pelayanan kesehatan terbaik</p>
+                    <a href="{{ route('register') }}" class="card-btn">Daftar Gratis</a>
+                </div>
+            </div>
+
+            <div class="features-showcase">
+                <div class="feature-item">
+                    <i class="fas fa-user-md"></i>
+                    <h4>Dokter Profesional</h4>
+                    <p>Tenaga medis berpengalaman</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <h4>Jadwal Fleksibel</h4>
+                    <p>Booking kapan saja</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-prescription-bottle"></i>
+                    <h4>Obat Lengkap</h4>
+                    <p>Stok obat terjamin</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-clock"></i>
+                    <h4>Layanan Cepat</h4>
+                    <p>Proses efisien</p>
                 </div>
             </div>
         </div>

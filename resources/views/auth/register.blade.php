@@ -1,413 +1,426 @@
 <x-layouts.auth title="Daftar Akun">
     @push('styles')
         <style>
-            .register-container {
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            /* Override container default */
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+
+            body {
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
                 min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 2rem 0;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 2rem 1rem !important;
+                position: relative;
+                overflow-x: hidden;
             }
 
-            .register-card {
-                border-radius: 1rem;
+            body::before {
+                content: '';
+                position: fixed;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+                background-size: 50px 50px;
+                animation: moveBackground 20s linear infinite;
+                z-index: 1;
+            }
+
+            @keyframes moveBackground {
+                0% {
+                    transform: translate(0, 0);
+                }
+
+                100% {
+                    transform: translate(50px, 50px);
+                }
+            }
+
+            .register-container {
+                position: relative;
+                z-index: 10;
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .register-box {
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                border-radius: 30px;
+                box-shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
                 overflow: hidden;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-                border: none;
-                background: white;
-                animation: slideUp 0.6s ease-out;
+                animation: fadeInScale 0.7s ease-out;
             }
 
-            @keyframes slideUp {
+            @keyframes fadeInScale {
                 from {
                     opacity: 0;
-                    transform: translateY(30px);
+                    transform: scale(0.9);
                 }
 
                 to {
                     opacity: 1;
-                    transform: translateY(0);
+                    transform: scale(1);
                 }
             }
 
-            .register-image-side {
-                background: linear-gradient(135deg, #36b9cc 0%, #1cc88a 100%);
-                min-height: 700px;
+            .register-header {
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+                padding: 2.5rem 2rem;
+                text-align: center;
+                position: relative;
+            }
+
+            .register-header::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg,
+                        transparent,
+                        rgba(255, 255, 255, 0.5),
+                        transparent);
+            }
+
+            .register-icon {
+                width: 80px;
+                height: 80px;
+                background: white;
+                border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                margin: 0 auto 1rem;
+                font-size: 2.5rem;
+                color: #11998e;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .register-header h1 {
                 color: white;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .register-image-side::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: url('{{ asset('template-admin/img/undraw_medical_care_movn.svg') }}');
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-                opacity: 0.1;
-            }
-
-            .register-image-content {
-                position: relative;
-                z-index: 2;
-                padding: 2rem;
-            }
-
-            .register-form-side {
-                padding: 2rem 1.5rem;
-                min-height: 700px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-
-            .brand-logo {
-                text-align: center;
-                margin-bottom: 1.5rem;
-            }
-
-            .brand-title {
                 font-size: 2rem;
                 font-weight: 800;
-                color: #5a5c69;
                 margin-bottom: 0.5rem;
             }
 
-            .brand-subtitle {
-                color: #858796;
-                font-size: 0.9rem;
-                margin-bottom: 0;
+            .register-header p {
+                color: rgba(255, 255, 255, 0.95);
+                font-size: 1rem;
+                margin: 0;
             }
 
-            .welcome-text {
-                text-align: center;
+            .register-body {
+                padding: 2.5rem;
+            }
+
+            .form-row-custom {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.2rem;
+            }
+
+            .form-group {
                 margin-bottom: 1.5rem;
             }
 
-            .welcome-title {
-                color: #5a5c69;
-                font-size: 1.3rem;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
+            .form-label {
+                display: block;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 0.6rem;
+                font-size: 0.95rem;
             }
 
-            .welcome-subtitle {
-                color: #858796;
-                font-size: 0.9rem;
+            .form-label i {
+                margin-right: 0.4rem;
+                color: #11998e;
             }
 
-            .form-control-user {
-                border-radius: 10rem;
-                padding: 1rem 1rem;
-                border: 1px solid #d1d3e2;
-                font-size: 0.85rem;
-                color: #6e707e;
+            .form-control {
+                width: 100%;
+                padding: 0.95rem 1.2rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                font-size: 1rem;
+                transition: all 0.3s;
+                background: #f8f9fa;
             }
 
-            .form-control-user:focus {
-                border-color: #667eea;
-                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            .form-control:focus {
+                outline: none;
+                border-color: #11998e;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1);
             }
 
-            .btn-user {
-                border-radius: 10rem;
-                padding: 1rem 2rem;
-                font-weight: 600;
-                font-size: 0.9rem;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            textarea.form-control {
+                resize: vertical;
+                min-height: 80px;
+            }
+
+            .btn-submit {
+                width: 100%;
+                padding: 1.1rem;
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
                 border: none;
+                border-radius: 15px;
                 color: white;
-                transition: all 0.3s ease;
+                font-size: 1.1rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+                margin-top: 1rem;
             }
 
-            .btn-user:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-                color: white;
+            .btn-submit:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 40px rgba(17, 153, 142, 0.5);
+            }
+
+            .btn-submit:active {
+                transform: translateY(-1px);
             }
 
             .divider {
-                margin: 1.5rem 0;
-                text-align: center;
-                position: relative;
+                display: flex;
+                align-items: center;
+                margin: 2rem 0;
             }
 
-            .divider::before {
+            .divider::before,
+            .divider::after {
                 content: '';
-                position: absolute;
-                top: 50%;
-                left: 0;
-                right: 0;
+                flex: 1;
                 height: 1px;
-                background: #e3e6f0;
+                background: #ddd;
             }
 
             .divider span {
-                background: white;
                 padding: 0 1rem;
-                color: #858796;
-                font-size: 0.8rem;
+                color: #999;
+                font-weight: 600;
+                font-size: 0.9rem;
             }
 
-            .link-login {
-                color: #667eea;
-                text-decoration: none;
+            .login-section {
+                text-align: center;
+                padding: 1.5rem;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 15px;
+            }
+
+            .login-section p {
+                margin: 0 0 0.8rem 0;
+                color: #666;
                 font-weight: 600;
             }
 
-            .link-login:hover {
-                color: #764ba2;
+            .btn-login {
+                display: inline-block;
+                padding: 0.8rem 2.5rem;
+                background: white;
+                border: 2px solid #11998e;
+                color: #11998e;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: 700;
+                transition: all 0.3s;
+            }
+
+            .btn-login:hover {
+                background: #11998e;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
                 text-decoration: none;
             }
 
-            .floating-icon {
-                font-size: 4rem;
-                margin-bottom: 1rem;
-                opacity: 0.9;
+            .alert {
+                padding: 1rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
             }
 
-            .form-row .col-sm-6 {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
+            .alert-danger {
+                background: #fee;
+                border: 1px solid #fcc;
+                color: #c33;
             }
 
-            .info-text {
-                background: linear-gradient(135deg, #f8f9fc 0%, #e2e5e9 100%);
-                border-radius: 0.75rem;
-                padding: 0.8rem;
-                margin-bottom: 1.2rem;
-                border: 1px solid #e3e6f0;
-                font-size: 0.8rem;
-                color: #5a5c69;
+            .password-strength {
+                margin-top: 0.5rem;
+                font-size: 0.85rem;
             }
 
-            .info-text i {
-                color: #667eea;
-                margin-right: 0.5rem;
+            .strength-bar {
+                height: 4px;
+                background: #e0e0e0;
+                border-radius: 2px;
+                margin-top: 0.3rem;
+                overflow: hidden;
             }
 
-            @media (max-width: 991.98px) {
-                .register-container {
-                    padding: 1rem 0;
+            .strength-fill {
+                height: 100%;
+                width: 0;
+                transition: all 0.3s;
+                border-radius: 2px;
+            }
+
+            @media (max-width: 768px) {
+                .register-body {
+                    padding: 2rem 1.5rem;
                 }
 
-                .register-form-side {
-                    padding: 1.5rem 1.2rem;
-                    min-height: auto;
-                }
-
-                .form-row .col-sm-6 {
-                    padding-left: 0.5rem;
-                    padding-right: 0.5rem;
-                }
-
-                .brand-title {
-                    font-size: 1.8rem;
-                }
-
-                .welcome-title {
-                    font-size: 1.2rem;
+                .form-row-custom {
+                    grid-template-columns: 1fr;
                 }
             }
 
-            @media (max-width: 575.98px) {
-                .register-form-side {
-                    padding: 1rem 0.8rem;
+            @media (max-width: 576px) {
+                body {
+                    padding: 1rem;
                 }
 
-                .brand-title {
+                .register-header {
+                    padding: 2rem 1.5rem;
+                }
+
+                .register-header h1 {
                     font-size: 1.6rem;
                 }
 
-                .welcome-title {
-                    font-size: 1.1rem;
-                }
-
-                .form-row .col-sm-6 {
-                    margin-bottom: 0.5rem;
+                .register-icon {
+                    width: 65px;
+                    height: 65px;
+                    font-size: 2rem;
                 }
             }
         </style>
     @endpush
 
     <div class="register-container">
-        <div class="row justify-content-center w-100">
-            <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card register-card">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <!-- Image Side -->
-                            <div class="col-lg-5 d-none d-lg-block">
-                                <div class="register-image-side">
-                                    <div class="register-image-content">
-                                        <div class="floating-icon">
-                                            <i class="fas fa-user-plus"></i>
-                                        </div>
-                                        <h4 class="font-weight-bold mb-3">Bergabung dengan Kami</h4>
-                                        <p class="mb-4">
-                                            Dapatkan akses ke layanan kesehatan digital yang memudahkan Anda dalam:
-                                        </p>
-                                        <div class="text-left">
-                                            <div class="mb-3">
-                                                <i class="fas fa-check-circle mr-2"></i>
-                                                <span>Daftar online tanpa antri</span>
-                                            </div>
-                                            <div class="mb-3">
-                                                <i class="fas fa-check-circle mr-2"></i>
-                                                <span>Riwayat pemeriksaan digital</span>
-                                            </div>
-                                            <div class="mb-3">
-                                                <i class="fas fa-check-circle mr-2"></i>
-                                                <span>Notifikasi jadwal praktik</span>
-                                            </div>
-                                            <div class="mb-3">
-                                                <i class="fas fa-check-circle mr-2"></i>
-                                                <span>Akses 24/7 dari mana saja</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <div class="register-box">
+            <div class="register-header">
+                <div class="register-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1>Buat Akun Baru</h1>
+                <p>Daftar sebagai pasien poliklinik</p>
+            </div>
 
-                            <!-- Form Side -->
-                            <div class="col-lg-7">
-                                <div class="register-form-side">
-                                    <!-- Brand -->
-                                    <div class="brand-logo">
-                                        <h1 class="brand-title">
-                                            <i class="fas fa-hospital-alt medical-icon"></i>Poliklinik
-                                        </h1>
-                                        <p class="brand-subtitle">Sistem Manajemen Digital</p>
-                                    </div>
+            <div class="register-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0" style="padding-left: 1.2rem;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-                                    <!-- Welcome Text -->
-                                    <div class="welcome-text">
-                                        <h4 class="welcome-title">Buat Akun Pasien Baru</h4>
-                                        <p class="welcome-subtitle">Isi formulir di bawah untuk mendaftar sebagai pasien
-                                        </p>
-                                    </div>
+                <form action="{{ route('register') }}" method="POST">
+                    @csrf
 
-                                    <!-- Info -->
-                                    <div class="info-text">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Informasi:</strong> Akun yang didaftarkan akan menjadi akun pasien.
-                                        Untuk akses admin atau dokter, silakan hubungi administrator.
-                                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>Nama Lengkap
+                        </label>
+                        <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
+                            value="{{ old('nama') }}" placeholder="Masukkan nama lengkap" required autofocus>
+                        @error('nama')
+                            <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                                    <!-- Register Form -->
-                                    <form class="user" action="{{ route('register') }}" method="POST">
-                                        @csrf
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i>Alamat
+                        </label>
+                        <textarea class="form-control @error('alamat') is-invalid @enderror" name="alamat"
+                            placeholder="Masukkan alamat lengkap" rows="2" required>{{ old('alamat') }}</textarea>
+                        @error('alamat')
+                            <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                                        <!-- Personal Information -->
-                                        <div class="form-group">
-                                            <input type="text"
-                                                class="form-control form-control-user @error('nama') is-invalid @enderror"
-                                                id="nama" name="nama" value="{{ old('nama') }}"
-                                                placeholder="Nama Lengkap" required autocomplete="name">
-                                            @error('nama')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group">
-                                            <input type="email"
-                                                class="form-control form-control-user @error('email') is-invalid @enderror"
-                                                id="email" name="email" value="{{ old('email') }}"
-                                                placeholder="Alamat Email" required autocomplete="email">
-                                            @error('email')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group">
-                                            <textarea class="form-control form-control-user @error('alamat') is-invalid @enderror" id="alamat" name="alamat"
-                                                rows="2" style="border-radius: 10rem; resize: none;" placeholder="Alamat Lengkap" required>{{ old('alamat') }}</textarea>
-                                            @error('alamat')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input type="text"
-                                                    class="form-control form-control-user @error('no_ktp') is-invalid @enderror"
-                                                    id="no_ktp" name="no_ktp" value="{{ old('no_ktp') }}"
-                                                    placeholder="Nomor KTP (16 digit)" maxlength="16"
-                                                    pattern="[0-9]{16}" title="Nomor KTP harus 16 digit angka" required>
-                                                @error('no_ktp')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <input type="text"
-                                                    class="form-control form-control-user @error('no_hp') is-invalid @enderror"
-                                                    id="no_hp" name="no_hp" value="{{ old('no_hp') }}"
-                                                    placeholder="Nomor HP" required>
-                                                @error('no_hp')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Password -->
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input type="password"
-                                                    class="form-control form-control-user @error('password') is-invalid @enderror"
-                                                    id="password" name="password"
-                                                    placeholder="Password (min. 8 karakter)" required
-                                                    autocomplete="new-password">
-                                                @error('password')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <input type="password" class="form-control form-control-user"
-                                                    id="password_confirmation" name="password_confirmation"
-                                                    placeholder="Konfirmasi Password" required
-                                                    autocomplete="new-password">
-                                            </div>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
-                                            <i class="fas fa-user-plus mr-2"></i>Daftar Akun
-                                        </button>
-                                    </form>
-
-                                    <!-- Divider -->
-                                    <div class="divider">
-                                        <span>atau</span>
-                                    </div>
-
-                                    <!-- Login Link -->
-                                    <div class="text-center">
-                                        <p class="mb-0">
-                                            Sudah punya akun?
-                                            <a class="link-login" href="{{ route('login') }}">
-                                                Masuk di sini
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <!-- Back to Home -->
-                                    <div class="text-center mt-3">
-                                        <a class="small text-muted" href="{{ route('home') }}">
-                                            <i class="fas fa-arrow-left mr-1"></i>Kembali ke Beranda
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="form-row-custom">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-id-card"></i>Nomor KTP
+                            </label>
+                            <input type="text" class="form-control @error('no_ktp') is-invalid @enderror"
+                                name="no_ktp" value="{{ old('no_ktp') }}" placeholder="16 digit" maxlength="16"
+                                required>
+                            @error('no_ktp')
+                                <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-phone"></i>Nomor HP
+                            </label>
+                            <input type="text" class="form-control @error('no_hp') is-invalid @enderror"
+                                name="no_hp" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx" required>
+                            @error('no_hp')
+                                <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
+
+                    <div class="form-row-custom">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-lock"></i>Password
+                            </label>
+                            <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                name="password" placeholder="Min. 8 karakter" required>
+                            @error('password')
+                                <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-lock"></i>Konfirmasi Password
+                            </label>
+                            <input type="password" class="form-control" name="password_confirmation"
+                                placeholder="Ulangi password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-user-plus mr-2"></i>Daftar Sekarang
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>ATAU</span>
+                </div>
+
+                <div class="login-section">
+                    <p>Sudah punya akun?</p>
+                    <a href="{{ route('login') }}" class="btn-login">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login Sekarang
+                    </a>
                 </div>
             </div>
         </div>

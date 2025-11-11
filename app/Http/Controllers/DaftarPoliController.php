@@ -67,21 +67,21 @@ class DaftarPoliController extends Controller
         try {
             // Data pasien yang sedang login dengan eager loading
             $pasien = User::with(['daftarPoli.jadwalPeriksa.dokter.poli'])
-                         ->find(Auth::id());
-            
+                ->find(Auth::id());
+
             // Daftar poli dengan relasi dokter dan jadwal (eager loading)
             $polis = Poli::with([
-                'dokters.jadwalPeriksa' => function($query) {
+                'dokters.jadwalPeriksa' => function ($query) {
                     $query->where('aktif', true)
-                          ->orderBy('hari')
-                          ->orderBy('jam_mulai');
+                        ->orderBy('hari')
+                        ->orderBy('jam_mulai');
                 }
             ])
-            ->whereHas('dokters.jadwalPeriksa', function($query) {
-                $query->where('aktif', true);
-            })
-            ->orderBy('nama_poli')
-            ->get();
+                ->whereHas('dokters.jadwalPeriksa', function ($query) {
+                    $query->where('aktif', true);
+                })
+                ->orderBy('nama_poli')
+                ->get();
 
             // Jadwal periksa aktif dengan relasi dokter dan poli (eager loading)  
             $jadwals = JadwalPeriksa::with(['dokter.poli'])
@@ -91,44 +91,6 @@ class DaftarPoliController extends Controller
                 ->get();
 
             return view('pasien.daftar', compact('pasien', 'polis', 'jadwals'));
-
-        } catch (Exception $e) {
-            Log::error('Failed to load registration form: ' . $e->getMessage(), [
-                'patient_id' => Auth::id()
-            ]);
-
-            return redirect()->route('pasien.dashboard')
-                ->with('error', 'Gagal memuat form pendaftaran.');
-        }
-    }
-
-    /**
-     * Show clinic registration form for patients
-     * 
-     * Displays form with available clinics and active
-     * doctor schedules for patient registration.
-     *
-     * @return View|RedirectResponse
-     */
-    public function create(): View|RedirectResponse
-    {
-        try {
-            $user = Auth::user();
-            $polis = Poli::with([
-                'dokters' => function ($query) {
-                    $query->whereHas('jadwalPeriksa', function ($q) {
-                        $q->where('hari', Carbon::now()->locale('id')->dayName);
-                    });
-                }
-            ])->orderBy('nama_poli')->get();
-
-            // Get today's active schedules
-            $jadwals = JadwalPeriksa::with('dokter.poli')
-                ->where('hari', Carbon::now()->locale('id')->dayName)
-                ->orderBy('jam_mulai')
-                ->get();
-
-            return view('pasien.daftar', compact('user', 'polis', 'jadwals'));
 
         } catch (Exception $e) {
             Log::error('Failed to load registration form: ' . $e->getMessage(), [
@@ -190,7 +152,7 @@ class DaftarPoliController extends Controller
             // Simpan data pendaftaran ke database
             $daftar = DaftarPoli::create([
                 'id_pasien' => Auth::id(),
-                'id_jadwal' => $validatedData['id_jadwal'], 
+                'id_jadwal' => $validatedData['id_jadwal'],
                 'keluhan' => trim($validatedData['keluhan']),
                 'no_antrian' => $no_antrian,
             ]);
@@ -215,115 +177,6 @@ class DaftarPoliController extends Controller
 
         } catch (Exception $e) {
             Log::error('Failed to submit patient registration: ' . $e->getMessage());
-            
-            return redirect()->back()
-                ->with('error', 'Gagal melakukan pendaftaran. Silakan coba lagi.')
-                ->withInput();
-        }
-    }
-
-    /**
-     * Store new clinic registration (Patient function)
-     * 
-     * Processes patient registration for clinic appointment
-     * with automatic queue number generation and validation.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        try {
-            // Check if patient already registered for today
-            $existingRegistration = DaftarPoli::whereHas('jadwalPeriksa', function ($query) {
-                $query->where('hari', Carbon::now()->locale('id')->dayName);
-            })
-                ->where('id_pasien', Auth::id())
-                ->whereDate('created_at', Carbon::today())
-                ->exists();
-
-            if ($existingRegistration) {
-                return redirect()->back()
-                    ->with('warning', 'Anda sudah terdaftar untuk hari ini. Silakan tunggu jadwal berikutnya.');
-            }
-
-            // Validate input data
-            $validatedData = $request->validate([
-                'id_jadwal' => 'required|exists:jadwal_periksas,id',
-                'keluhan' => 'required|string|min:10|max:500',
-            ], [
-                'id_jadwal.required' => 'Jadwal dokter wajib dipilih.',
-                'id_jadwal.exists' => 'Jadwal yang dipilih tidak valid.',
-                'keluhan.required' => 'Keluhan wajib diisi.',
-                'keluhan.min' => 'Keluhan minimal 10 karakter.',
-                'keluhan.max' => 'Keluhan maksimal 500 karakter.',
-            ]);
-
-            $jadwal = JadwalPeriksa::with('dokter.poli')->findOrFail($validatedData['id_jadwal']);
-
-            // Check if schedule is for today
-            if ($jadwal->hari !== Carbon::now()->locale('id')->dayName) {
-                return redirect()->back()
-                    ->with('error', 'Jadwal yang dipilih bukan untuk hari ini.')
-                    ->withInput();
-            }
-
-            // Check if current time is within schedule
-            $currentTime = Carbon::now()->format('H:i');
-            if ($currentTime < $jadwal->jam_mulai || $currentTime > $jadwal->jam_selesai) {
-                return redirect()->back()
-                    ->with('warning', 'Pendaftaran hanya dapat dilakukan pada jam praktik dokter.')
-                    ->withInput();
-            }
-
-            // Generate queue number
-            $count = DaftarPoli::where('id_jadwal', $validatedData['id_jadwal'])
-                ->whereDate('created_at', Carbon::today())
-                ->count();
-            $no_antrian = $count + 1;
-
-            // Check queue limit (max 20 patients per day)
-            if ($no_antrian > 20) {
-                return redirect()->back()
-                    ->with('error', 'Kuota pendaftaran hari ini sudah penuh. Silakan daftar lain waktu.');
-            }
-
-            // Create registration
-            $daftar = DaftarPoli::create([
-                'id_pasien' => Auth::id(),
-                'id_jadwal' => $validatedData['id_jadwal'],
-                'keluhan' => trim($validatedData['keluhan']),
-                'no_antrian' => $no_antrian,
-            ]);
-
-            Log::info('New clinic registration created', [
-                'registration_id' => $daftar->id,
-                'patient_id' => Auth::id(),
-                'jadwal_id' => $validatedData['id_jadwal'],
-                'queue_number' => $no_antrian,
-                'doctor' => $jadwal->dokter->nama,
-                'poli' => $jadwal->dokter->poli->nama_poli
-            ]);
-
-            return redirect()->route('pasien.riwayat')
-                ->with('message', "Pendaftaran berhasil! Nomor antrian Anda: $no_antrian")
-                ->with('type', 'success');
-
-        } catch (ValidationException $e) {
-            Log::warning('Clinic registration validation failed', [
-                'patient_id' => Auth::id(),
-                'errors' => $e->errors()
-            ]);
-
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput();
-
-        } catch (Exception $e) {
-            Log::error('Failed to create clinic registration: ' . $e->getMessage(), [
-                'patient_id' => Auth::id(),
-                'trace' => $e->getTraceAsString()
-            ]);
 
             return redirect()->back()
                 ->with('error', 'Gagal melakukan pendaftaran. Silakan coba lagi.')
