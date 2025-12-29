@@ -15,6 +15,8 @@ return new class () extends Migration {
             $table->string('nama_obat');
             $table->string('kemasan', 35)->nullable();
             $table->integer('harga');
+            $table->integer('stok')->default(0);
+            $table->integer('stok_minimum')->default(10);
             $table->timestamps();
         });
     }

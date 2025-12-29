@@ -44,15 +44,20 @@
                                             class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i>Edit
                                         </a>
-                                        <button class="btn btn-sm btn-danger"
-                                            onclick="confirmDelete('{{ route('admin.dokter.destroy', $dokter) }}', 'Dokter {{ $dokter->nama }}')">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
+                                        <form action="{{ route('admin.dokter.destroy', $dokter) }}" method="POST"
+                                            style="display: inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="confirmDelete('{{ route('admin.dokter.destroy', $dokter) }}', 'Dokter {{ $dokter->nama }}')">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td class="text-center" colspan="7">
+                                    <td class="text-center" colspan="8">
                                         Belum ada Dokter
                                     </td>
                                 </tr>

@@ -99,19 +99,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all examinations conducted by this doctor
-     * 
-     * Only applies to users with 'dokter' role.
-     * Returns empty collection for admin and pasien users.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Periksa>
-     */
-    public function periksa()
-    {
-        return $this->hasMany(Periksa::class, 'id_dokter');
-    }
-
-    /**
      * Get all examinations for this patient (through registrations)
      * 
      * Only applies to users with 'pasien' role.

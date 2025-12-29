@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('id_periksa')->constrained('periksas')->cascadeOnDelete();
             $table->foreignId('id_obat')->constrained('obats')->cascadeOnDelete();
+            $table->integer('jumlah')->default(1);
             $table->timestamps();
         });
     }

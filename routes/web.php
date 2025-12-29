@@ -1,19 +1,27 @@
 <?php
 
-use App\Http\Controllers\{
-    AuthController,
-    AdminController,
-    DokterController,
-    PasienController,
-    PoliController,
-    ObatController,
-    PeriksaController,
-    DaftarPoliController,
-    HomeController
+use App\Http\Controllers\Auth\{
+    LoginController,
+    RegisterController
 };
-use App\Http\Controllers\Dokter\JadwalPeriksaController;
-use App\Http\Controllers\Pasien\PoliController as PasienPoliController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\{
+    DashboardAdminController,
+    DokterController,
+    ObatController,
+    PasienController,
+    PoliController
+};
+use App\Http\Controllers\Dokter\{
+    DashboardDokterController,
+    JadwalPeriksaController,
+    PeriksaPasienController,
+    RiwayatPasienController
+};
+use App\Http\Controllers\Pasien\{
+    DashboardPasienController,
+    DaftarPoliController
+};
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -25,27 +33,34 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
  * Authentication Routes
  */
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    // Login routes
+    Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+
+    // Registration routes (for patients only)
+    Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+// Logout route (authenticated users only)
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 /**
  * Admin Dashboard Routes
  */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', [AdminController::class, 'index'])->name('index');
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardAdminController::class, 'index'])->name('index');
+    Route::get('/dashboard', [DashboardAdminController::class, 'dashboard'])->name('dashboard');
 
     // Resource Management
-    Route::resource('polis', PoliController::class)->except(['show']);
+    Route::resource('poli', PoliController::class)->except(['show']);
     Route::resource('dokter', DokterController::class)->except(['show']);
     Route::resource('pasien', PasienController::class)->except(['show']);
     Route::resource('obat', ObatController::class)->except(['show']);
+
+    // Stock Management (Capstone Feature)
+    Route::post('obat/{obat}/adjust-stock', [ObatController::class, 'adjustStock'])->name('obat.adjust-stock');
 });
 
 /**
@@ -53,21 +68,24 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
  */
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->group(function () {
     // Dashboard
-    Route::get('/', [DokterController::class, 'index'])->name('index');
-    Route::get('/dashboard', [DokterController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardDokterController::class, 'index'])->name('index');
+    Route::get('/dashboard', [DashboardDokterController::class, 'dashboard'])->name('dashboard');
 
-    // Jadwal Management
+    // Jadwal Management (CRUD resource standar tanpa method custom)
     Route::resource('jadwal-periksa', JadwalPeriksaController::class)->except(['show']);
 
     // Patient Examination
     Route::prefix('periksa-pasien')->name('periksa-pasien.')->group(function () {
-        Route::get('/', [PeriksaController::class, 'index'])->name('index');
-        Route::get('/{id}', [PeriksaController::class, 'show'])->name('show');
-        Route::post('/{id}', [PeriksaController::class, 'store'])->name('store');
+        Route::get('/', [PeriksaPasienController::class, 'index'])->name('index');
+        Route::get('/create/{id}', [PeriksaPasienController::class, 'create'])->name('create');
+        Route::post('/store', [PeriksaPasienController::class, 'store'])->name('store');
     });
 
     // Patient History
-    Route::get('/riwayat-pasien', [PeriksaController::class, 'riwayat'])->name('riwayat-pasien.index');
+    Route::prefix('riwayat-pasien')->name('riwayat-pasien.')->group(function () {
+        Route::get('/', [RiwayatPasienController::class, 'index'])->name('index');
+        Route::get('/{id}', [RiwayatPasienController::class, 'show'])->name('show');
+    });
 });
 
 /**
@@ -75,8 +93,8 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->g
  */
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->name('pasien.')->group(function () {
     // Dashboard
-    Route::get('/', [PasienController::class, 'index'])->name('index');
-    Route::get('/dashboard', [PasienController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardPasienController::class, 'index'])->name('index');
+    Route::get('/dashboard', [DashboardPasienController::class, 'dashboard'])->name('dashboard');
 
     // Poli Registration - Sesuai instruksi Tugas 5
     Route::get('/daftar-poli', [DaftarPoliController::class, 'get'])->name('daftar-poli');

@@ -20,9 +20,10 @@ class JadwalPeriksa extends Model
         'aktif'
     ];
 
-    protected $casts = [
-        'aktif' => 'boolean'
-    ];
+    // Removed boolean cast - let it stay as 'Y'/'T' enum to match database
+    // protected $casts = [
+    //     'aktif' => 'boolean'
+    // ];
 
     // Relasi
     public function dokter()
@@ -33,5 +34,17 @@ class JadwalPeriksa extends Model
     public function daftarPoli()
     {
         return $this->hasMany(DaftarPoli::class, 'id_jadwal');
+    }
+
+    public function poli()
+    {
+        return $this->hasOneThrough(
+            Poli::class,
+            User::class,
+            'id', // Foreign key on users table
+            'id', // Foreign key on polis table
+            'id_dokter', // Local key on jadwal_periksas table
+            'id_poli' // Local key on users table
+        );
     }
 }

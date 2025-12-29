@@ -116,7 +116,7 @@
                         <div class="icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('admin.pasien.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -131,7 +131,7 @@
                         <div class="icon">
                             <i class="fas fa-user-md"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('admin.dokter.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -146,7 +146,7 @@
                         <div class="icon">
                             <i class="fas fa-hospital"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('admin.poli.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -161,7 +161,7 @@
                         <div class="icon">
                             <i class="fas fa-pills"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('admin.obat.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>

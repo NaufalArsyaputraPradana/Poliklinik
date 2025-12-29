@@ -38,10 +38,15 @@
                                             class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <button class="btn btn-sm btn-danger"
-                                            onclick="confirmDelete('{{ route('admin.pasien.destroy', $pasien->id) }}', 'Pasien {{ $pasien->nama }}')">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
+                                        <form action="{{ route('admin.pasien.destroy', $pasien->id) }}" method="POST"
+                                            style="display: inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="confirmDelete('{{ route('admin.pasien.destroy', $pasien->id) }}', 'Pasien {{ $pasien->nama }}')">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
@@ -57,7 +62,5 @@
             </div>
         </div>
     </div>
-
-
 
 </x-layouts.app>

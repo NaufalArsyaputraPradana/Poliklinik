@@ -15,6 +15,7 @@ class DetailPeriksa extends Model
     protected $fillable = [
         'id_periksa',
         'id_obat',
+        'jumlah', // Quantity of medicine prescribed
     ];
 
     // RELATIONSHIPS

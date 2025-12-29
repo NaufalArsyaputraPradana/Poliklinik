@@ -54,8 +54,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.polis.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.polis.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.poli.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.poli.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-hospital"></i>
                             <p>
                                 Manajemen Poli

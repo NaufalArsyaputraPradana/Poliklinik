@@ -36,6 +36,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Bootstrap 4 JS (required for alerts and components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous">
+    </script>
     <!-- AdminLTE JS -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <!-- SweetAlert2 -->
@@ -74,6 +78,16 @@
                     text: '{{ session('error') }}',
                     showConfirmButton: true,
                     confirmButtonColor: '#dc3545'
+                });
+            @endif
+
+            @if (session('warning'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: '{{ session('warning') }}',
+                    showConfirmButton: true,
+                    confirmButtonColor: '#ffc107'
                 });
             @endif
 
@@ -132,7 +146,7 @@
 
                     // CSRF Token
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
-                    'content');
+                        'content');
                     if (csrfToken) {
                         const csrfInput = document.createElement('input');
                         csrfInput.type = 'hidden';

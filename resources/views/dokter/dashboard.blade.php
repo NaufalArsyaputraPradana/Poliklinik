@@ -116,7 +116,7 @@
                         <div class="icon">
                             <i class="fas fa-calendar-check"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('dokter.jadwal-periksa.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -132,7 +132,7 @@
                         <div class="icon">
                             <i class="fas fa-user-injured"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('dokter.periksa-pasien.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -148,7 +148,7 @@
                         <div class="icon">
                             <i class="fas fa-history"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="{{ route('dokter.riwayat-pasien.index') }}" class="small-box-footer">
                             Info lebih lanjut <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -196,33 +196,50 @@
                     <div class="card stats-card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="fas fa-tasks mr-2"></i>Aktivitas Dokter
+                                <i class="fas fa-clipboard-list mr-2"></i>Menu Utama Dokter
                             </h3>
                         </div>
                         <div class="card-body">
                             <div class="list-group list-group-flush">
-                                <div
-                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                                    <span><i class="fas fa-stethoscope text-primary mr-2"></i>Mengatur Jadwal</span>
+                                <a href="{{ route('dokter.jadwal-periksa.index') }}"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-0 py-3">
+                                    <div>
+                                        <i class="fas fa-calendar-plus text-primary mr-3"></i>
+                                        <span class="font-weight-medium">Kelola Jadwal Praktik</span>
+                                        <br>
+                                        <small class="text-muted">Atur waktu dan status ketersediaan praktik</small>
+                                    </div>
                                     <i class="fas fa-chevron-right text-muted"></i>
-                                </div>
-                                <div
-                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                                    <span><i class="fas fa-clipboard-check text-success mr-2"></i>Periksa Pasien</span>
+                                </a>
+
+                                <a href="{{ route('dokter.periksa-pasien.index') }}"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-0 py-3">
+                                    <div>
+                                        <i class="fas fa-user-check text-success mr-3"></i>
+                                        <span class="font-weight-medium">Periksa Pasien</span>
+                                        <br>
+                                        <small class="text-muted">Melakukan pemeriksaan dan diagnosa pasien</small>
+                                    </div>
                                     <i class="fas fa-chevron-right text-muted"></i>
-                                </div>
-                                <div
-                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                                    <span><i class="fas fa-history text-info mr-2"></i>Riwayat Pemeriksaan</span>
+                                </a>
+
+                                <a href="{{ route('dokter.riwayat-pasien.index') }}"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-0 py-3">
+                                    <div>
+                                        <i class="fas fa-file-medical text-info mr-3"></i>
+                                        <span class="font-weight-medium">Riwayat Pemeriksaan</span>
+                                        <br>
+                                        <small class="text-muted">Lihat catatan medis dan hasil pemeriksaan</small>
+                                    </div>
                                     <i class="fas fa-chevron-right text-muted"></i>
-                                </div>
-                                <div
-                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                                    <span><i class="fas fa-prescription-bottle-alt text-danger mr-2"></i>Kelola
-                                        Resep</span>
-                                    <i class="fas fa-chevron-right text-muted"></i>
-                                </div>
+                                </a>
                             </div>
+                        </div>
+                        <div class="card-footer bg-light text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Klik menu untuk mengakses fitur
+                            </small>
                         </div>
                     </div>
                 </div>

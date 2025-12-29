@@ -2,13 +2,7 @@
     <div class="container-fluid px-4 mt-4">
         <div class="row">
             <div class="col-lg-12">
-                {{-- Alert flash message --}}
-                @if (session('message'))
-                    <div class="alert alert-{{ session('type', 'success') }} alert-dismissible fade show" role="alert">
-                        {{ session('message') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
+                {{-- Flash messages handled by SweetAlert2 in layout --}}
 
                 <h1 class="mb-4">Jadwal Periksa</h1>
 
@@ -37,23 +31,50 @@
                                     <td>{{ date('H:i', strtotime($jadwalPeriksa->jam_selesai)) }}</td>
                                     <td>
                                         @if ($jadwalPeriksa->aktif == 'Y')
-                                            <span class="badge badge-success">Aktif</span>
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle"></i> Aktif
+                                            </span>
                                         @else
-                                            <span class="badge badge-secondary">Tidak Aktif</span>
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-times-circle"></i> Tidak Aktif
+                                            </span>
                                         @endif
                                     </td>
                                     <td>
+                                        <!-- Toggle Status menggunakan form update sederhana -->
+                                        <form action="{{ route('dokter.jadwal-periksa.update', $jadwalPeriksa) }}"
+                                            method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <!-- Hidden fields untuk data yang tidak berubah -->
+                                            <input type="hidden" name="hari" value="{{ $jadwalPeriksa->hari }}">
+                                            <input type="hidden" name="jam_mulai"
+                                                value="{{ date('H:i', strtotime($jadwalPeriksa->jam_mulai)) }}">
+                                            <input type="hidden" name="jam_selesai"
+                                                value="{{ date('H:i', strtotime($jadwalPeriksa->jam_selesai)) }}">
+                                            <!-- Toggle status: Y -> T atau T -> Y -->
+                                            <input type="hidden" name="aktif"
+                                                value="{{ $jadwalPeriksa->aktif == 'Y' ? 'T' : 'Y' }}">
+
+                                            <button type="submit" class="btn btn-sm btn-info"
+                                                title="{{ $jadwalPeriksa->aktif == 'Y' ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                                <i
+                                                    class="fas {{ $jadwalPeriksa->aktif == 'Y' ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
+                                            </button>
+                                        </form>
+
                                         <a href="{{ route('dokter.jadwal-periksa.edit', $jadwalPeriksa) }}"
-                                            class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i> Edit
+                                            class="btn btn-sm btn-warning" title="Edit Jadwal">
+                                            <i class="fas fa-edit"></i>
                                         </a>
+
                                         <form action="{{ route('dokter.jadwal-periksa.destroy', $jadwalPeriksa) }}"
                                             method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-sm btn-danger"
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus Jadwal"
                                                 onclick="return confirm('Yakin ingin menghapus jadwal periksa ini?')">
-                                                <i class="fas fa-trash"></i> Hapus
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>

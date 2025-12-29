@@ -5,7 +5,7 @@
                 <h1 class="mb-4">Tambah Poli</h1>
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.polis.store') }}" method="POST" id="poliForm">
+                        <form action="{{ route('admin.poli.store') }}" method="POST" id="poliForm">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -37,7 +37,7 @@
                                     onclick="confirmSubmit('#poliForm', 'Apakah Anda yakin ingin menambahkan poli ini?')">
                                     <i class="fas fa-save"></i> Simpan
                                 </button>
-                                <a href="{{ route('admin.polis.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('admin.poli.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Kembali
                                 </a>
                             </div>

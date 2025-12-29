@@ -24,12 +24,21 @@ class Periksa extends Model
         'biaya_periksa' => 'integer'
     ];
 
-    // Relasi
+    /**
+     * Relasi ke pendaftaran poli
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<DaftarPoli, Periksa>
+     */
     public function daftarPoli()
     {
         return $this->belongsTo(DaftarPoli::class, 'id_daftar_poli');
     }
 
+    /**
+     * Relasi ke detail periksa (obat yang diresepkan)
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetailPeriksa>
+     */
     public function detailPeriksa()
     {
         return $this->hasMany(DetailPeriksa::class, 'id_periksa');

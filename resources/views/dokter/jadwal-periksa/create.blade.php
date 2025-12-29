@@ -52,6 +52,25 @@
                                 </div>
                             </div>
 
+                            <div class="form-group mb-3">
+                                <label for="aktif" class="form-label">Status Jadwal <span
+                                        class="text-danger">*</span></label>
+                                <select name="aktif" id="aktif"
+                                    class="form-select @error('aktif') is-invalid @enderror" required>
+                                    <option value="Y" {{ old('aktif', 'Y') == 'Y' ? 'selected' : '' }}>Aktif
+                                    </option>
+                                    <option value="T" {{ old('aktif') == 'T' ? 'selected' : '' }}>Tidak Aktif
+                                    </option>
+                                </select>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> Jadwal yang aktif akan muncul di daftar pilihan
+                                    pasien
+                                </small>
+                                @error('aktif')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success">
                                     <i class="fas fa-save"></i> Simpan

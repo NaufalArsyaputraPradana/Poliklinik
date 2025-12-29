@@ -7,7 +7,7 @@
 
                 <h1 class="mb-4">Data Poli</h1>
 
-                <a href="{{ route('admin.polis.create') }}" class="btn btn-primary mb-3">
+                <a href="{{ route('admin.poli.create') }}" class="btn btn-primary mb-3">
                     <i class="fas fa-plus"></i> Tambah Poli
                 </a>
 
@@ -28,11 +28,11 @@
                                     <td>{{ $poli->nama_poli }}</td>
                                     <td>{{ $poli->keterangan }}</td>
                                     <td>
-                                        <a href="{{ route('admin.polis.edit', $poli) }}" class="btn btn-sm btn-warning">
+                                        <a href="{{ route('admin.poli.edit', $poli) }}" class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                         <button class="btn btn-sm btn-danger"
-                                            onclick="confirmDelete('{{ route('admin.polis.destroy', $poli) }}', 'Poli {{ $poli->nama_poli }}')">
+                                            onclick="confirmDelete('{{ route('admin.poli.destroy', $poli) }}', 'Poli {{ $poli->nama_poli }}')">
                                             <i class="fas fa-trash"></i> Hapus
                                         </button>
                                     </td>
