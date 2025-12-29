@@ -17,6 +17,7 @@
                             <tr>
                                 <th>Nama Obat</th>
                                 <th>Kemasan</th>
+                                <th>Stok</th>
                                 <th>Harga</th>
                                 <th style="width: 150px;">Aksi</th>
                             </tr>
@@ -26,6 +27,7 @@
                                 <tr>
                                     <td>{{ $obat->nama_obat }}</td>
                                     <td>{{ $obat->kemasan }}</td>
+                                    <td>{{ $obat->stok }}</td>
                                     <td>Rp {{ number_format($obat->harga, 0, ',', '.') }}</td>
                                     <td>
                                         <a href="{{ route('admin.obat.edit', $obat->id) }}"
@@ -40,7 +42,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td class="text-center" colspan="4">
+                                    <td class="text-center" colspan="5">
                                         Belum ada data obat
                                     </td>
                                 </tr>
