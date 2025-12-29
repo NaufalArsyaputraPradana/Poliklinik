@@ -35,6 +35,7 @@ class DashboardAdminController extends Controller
      * 
      * Shows comprehensive statistics about the clinic including
      * total counts of policlinics, doctors, patients, and medicines.
+     * Also displays stock alerts for medicines.
      *
      * @return View
      */
@@ -61,7 +62,18 @@ class DashboardAdminController extends Controller
                     ->count()
             ];
 
-            return view('admin.dashboard', array_merge($statistics, $additionalStats));
+            // Stock alerts (Capstone Feature)
+            $obatHabis = Obat::where('stok', '<=', 0)->get();
+            $obatMenipis = Obat::whereRaw('stok > 0 AND stok <= stok_minimum')->get();
+
+            $stockAlerts = [
+                'obatHabis' => $obatHabis,
+                'obatMenipis' => $obatMenipis,
+                'totalObatHabis' => $obatHabis->count(),
+                'totalObatMenipis' => $obatMenipis->count()
+            ];
+
+            return view('admin.dashboard', array_merge($statistics, $additionalStats, $stockAlerts));
 
         } catch (Exception $e) {
             // Log error for debugging
@@ -77,7 +89,11 @@ class DashboardAdminController extends Controller
                 'totalObat' => 0,
                 'aktiveDokter' => 0,
                 'pasienBaru' => 0,
-                'poliAktif' => 0
+                'poliAktif' => 0,
+                'obatHabis' => collect(),
+                'obatMenipis' => collect(),
+                'totalObatHabis' => 0,
+                'totalObatMenipis' => 0
             ])->with('error', 'Terjadi kesalahan saat memuat data dashboard.');
         }
     }

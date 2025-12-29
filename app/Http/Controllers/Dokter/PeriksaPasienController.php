@@ -68,7 +68,7 @@ class PeriksaPasienController extends Controller
             foreach ($obatTerpilih as $obat) {
                 $obatModel = Obat::findOrFail($obat['id']);
 
-                if ($obatModel->stok < $obat['jumlah']) {
+                if (!$obatModel->hasStokCukup($obat['jumlah'])) {
                     throw new \Exception("Stok obat '{$obatModel->nama_obat}' tidak mencukupi. Tersedia: {$obatModel->stok}, Dibutuhkan: {$obat['jumlah']}");
                 }
             }
@@ -90,10 +90,11 @@ class PeriksaPasienController extends Controller
                     'jumlah' => $obat['jumlah'],
                 ]);
 
-                // Auto-deduct stock (Capstone Feature)
+                // Auto-deduct stock using Model method (Capstone Feature)
                 $obatModel = Obat::findOrFail($obat['id']);
-                $obatModel->stok -= $obat['jumlah'];
-                $obatModel->save();
+                if (!$obatModel->decreaseStock($obat['jumlah'])) {
+                    throw new \Exception("Gagal mengurangi stok obat '{$obatModel->nama_obat}'");
+                }
             }
 
             DB::commit();

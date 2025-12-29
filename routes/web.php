@@ -60,7 +60,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('obat', ObatController::class)->except(['show']);
 
     // Stock Management (Capstone Feature)
-    Route::post('obat/{obat}/adjust-stock', [ObatController::class, 'adjustStock'])->name('obat.adjust-stock');
+    Route::put('obat/{obat}/adjust-stock', [ObatController::class, 'adjustStock'])->name('obat.adjust-stock');
 });
 
 /**
