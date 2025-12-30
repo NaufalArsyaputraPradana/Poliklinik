@@ -47,20 +47,13 @@
                                 @enderror
                             </div>
 
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle"></i> <strong>Perhatian!</strong><br>
-                                Untuk mengubah stok, gunakan tombol <strong>+/-/Set</strong> di halaman daftar obat
-                                untuk tracking yang lebih baik.
-                            </div>
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="stok" class="form-label">Stok Saat Ini</label>
+                                        <label for="stok" class="form-label">Stok</label>
                                         <input type="number" id="stok" name="stok"
                                             class="form-control @error('stok') is-invalid @enderror"
                                             value="{{ old('stok', $obat->stok) }}" min="0" max="10000">
-                                        <small class="text-muted">Stok tersedia: {{ $obat->stok }} unit</small>
                                         @error('stok')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -74,7 +67,6 @@
                                             class="form-control @error('stok_minimum') is-invalid @enderror"
                                             value="{{ old('stok_minimum', $obat->stok_minimum) }}" min="1"
                                             max="100">
-                                        <small class="text-muted">Warning ketika stok ≤ nilai ini</small>
                                         @error('stok_minimum')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

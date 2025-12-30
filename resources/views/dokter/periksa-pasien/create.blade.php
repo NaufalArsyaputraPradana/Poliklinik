@@ -1,71 +1,118 @@
 <x-layouts.app title="Periksa Pasien">
-    <div class="container-fluid">
+    <div class="container-fluid px-4 mt-4">
+        <h1 class="mb-4">Form Pemeriksaan Pasien</h1>
+
         <div class="row">
-            <div class="col-lg-10 offset-lg-1">
+            <!-- KIRI: Informasi Pasien -->
+            <div class="col-md-3">
+                @if (isset($daftar) && $daftar)
+                    <!-- CARD 1: Data Identitas -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Data Identitas Pasien</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Nama</th>
+                                    <td>{{ $daftar->pasien->nama ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>No. RM</th>
+                                    <td>{{ $daftar->pasien->no_rm ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>No. HP</th>
+                                    <td>{{ $daftar->pasien->no_hp ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Antrian</th>
+                                    <td><span class="badge badge-primary">{{ $daftar->no_antrian ?? '-' }}</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: Keluhan Pasien -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Keluhan Pasien</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ $daftar->keluhan ?? 'Tidak ada keluhan' }}</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Data pasien tidak ditemukan!
+                    </div>
+                @endif
+            </div>
+
+            <!-- KANAN: Form Resep Obat -->
+            <div class="col-md-9">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Form Pemeriksaan Pasien</h3>
+                        <h5 class="mb-0">Form Resep Obat & Pemeriksaan</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('dokter.periksa-pasien.store') }}" method="POST">
                             @csrf
+                            <input type="hidden" name="id_daftar_poli" value="{{ $daftar->id ?? $id }}">
 
-                            <input type="hidden" name="id_daftar_poli" value="{{ $id ?? ($daftar->id ?? '') }}">
-
-                            <div class="form-group mb-3">
-                                <label for="obat" class="form-label">Pilih Obat</label>
-                                <select id="select-obat" class="form-control">
-                                    <option value="">-- Pilih Obat --</option>
-                                    @foreach ($obats as $obat)
-                                        <option value="{{ $obat->id }}" data-nama="{{ $obat->nama_obat }}"
-                                            data-harga="{{ $obat->harga }}" data-stok="{{ $obat->stok }}"
-                                            {{ $obat->stok <= 0 ? 'disabled' : '' }}>
-                                            {{ $obat->nama_obat }} - Rp{{ number_format($obat->harga) }}
-                                            @if ($obat->stok <= 0)
-                                                ⚠ <span style="color: red;">Stok Habis</span>
-                                            @elseif($obat->stok <= $obat->stok_minimum)
-                                                (Tersisa: {{ $obat->stok }} unit)
-                                            @else
-                                                (Stok: {{ $obat->stok }} unit)
-                                            @endif
-                                        </option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Pilih Obat</label>
+                                        <select id="select-obat" class="form-control">
+                                            <option value="">-- Pilih Obat --</option>
+                                            @foreach ($obats as $obat)
+                                                <option value="{{ $obat->id }}" data-nama="{{ $obat->nama_obat }}"
+                                                    data-harga="{{ $obat->harga }}" data-stok="{{ $obat->stok }}"
+                                                    {{ $obat->stok <= 0 ? 'disabled' : '' }}>
+                                                    {{ $obat->nama_obat }} - Rp{{ number_format($obat->harga) }}
+                                                    (Stok: {{ $obat->stok }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Jumlah</label>
+                                        <input type="number" id="jumlah-obat" class="form-control" min="1"
+                                            value="1">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label>
+                                        <button type="button" id="btn-tambah-obat" class="btn btn-primary btn-block">
+                                            <i class="fas fa-plus"></i> Tambah
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label for="jumlah-obat" class="form-label">Jumlah</label>
-                                <input type="number" id="jumlah-obat" class="form-control" min="1"
-                                    value="1" placeholder="Masukkan jumlah obat">
-                                <small class="text-muted">Tentukan jumlah obat yang akan diberikan</small>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <button type="button" id="btn-tambah-obat" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i> Tambah Obat
-                                </button>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="catatan" class="form-label">Catatan</label>
-                                <textarea name="catatan" id="catatan" class="form-control" rows="4" required>{{ old('catatan') }}</textarea>
-                            </div>
-
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                 <label>Obat Terpilih</label>
-                                <ul id="obat-terpilih" class="list-group mb-2"></ul>
+                                <ul id="obat-terpilih" class="list-group mb-3"></ul>
                                 <input type="hidden" name="biaya_periksa" id="biaya_periksa" value="0">
                                 <input type="hidden" name="obat_json" id="obat_json">
                             </div>
 
-                            <div class="form-group mb-3">
-                                <label>Total Harga</label>
+                            <div class="form-group">
+                                <label>Catatan Pemeriksaan</label>
+                                <textarea name="catatan" id="catatan" class="form-control" rows="4" required>{{ old('catatan') }}</textarea>
+                            </div>
+
+                            <div class="form-group">
                                 <div id="total-harga"></div>
                             </div>
 
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save"></i> Simpan
+                                    <i class="fas fa-save"></i> Simpan Pemeriksaan
                                 </button>
                                 <a href="{{ route('dokter.periksa-pasien.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Kembali
@@ -112,7 +159,8 @@
 
                 if (jumlah > stok) {
                     alert(
-                        `⚠ Stok tidak mencukupi!\n\nObat: ${nama}\nJumlah diminta: ${jumlah} unit\nStok tersedia: ${stok} unit`);
+                        `⚠ Stok tidak mencukupi!\n\nObat: ${nama}\nJumlah diminta: ${jumlah} unit\nStok tersedia: ${stok} unit`
+                        );
                     return;
                 }
 
@@ -123,7 +171,8 @@
 
                     if (totalJumlahBaru > stok) {
                         alert(
-                            `⚠ Stok tidak mencukupi!\n\nObat: ${nama}\nTotal jumlah: ${totalJumlahBaru} unit\nStok tersedia: ${stok} unit`);
+                            `⚠ Stok tidak mencukupi!\n\nObat: ${nama}\nTotal jumlah: ${totalJumlahBaru} unit\nStok tersedia: ${stok} unit`
+                            );
                         return;
                     }
 

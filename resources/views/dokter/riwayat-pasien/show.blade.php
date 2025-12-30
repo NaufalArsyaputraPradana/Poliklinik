@@ -65,22 +65,34 @@
                                         <tr>
                                             <th width="50">#</th>
                                             <th>Nama Obat</th>
-                                            <th width="150">Harga</th>
+                                            <th width="100" class="text-center">Jumlah</th>
+                                            <th width="150" class="text-right">Harga Satuan</th>
+                                            <th width="150" class="text-right">Subtotal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php $totalObat = 0; @endphp
                                         @foreach ($periksa->detailPeriksa as $index => $detail)
-                                            @php $totalObat += $detail->obat->harga; @endphp
+                                            @php
+                                                $subtotal = $detail->obat->harga * $detail->jumlah;
+                                                $totalObat += $subtotal;
+                                            @endphp
                                             <tr>
                                                 <td class="text-center">{{ $index + 1 }}</td>
                                                 <td>{{ $detail->obat->nama_obat ?? '-' }}</td>
-                                                <td class="text-right">Rp
-                                                    {{ number_format($detail->obat->harga, 0, ',', '.') }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge badge-primary">{{ $detail->jumlah }} unit</span>
+                                                </td>
+                                                <td class="text-right">
+                                                    Rp {{ number_format($detail->obat->harga, 0, ',', '.') }}
+                                                </td>
+                                                <td class="text-right">
+                                                    <strong>Rp {{ number_format($subtotal, 0, ',', '.') }}</strong>
+                                                </td>
                                             </tr>
                                         @endforeach
                                         <tr class="table-active">
-                                            <td colspan="2" class="text-right"><strong>Total Harga Obat:</strong>
+                                            <td colspan="4" class="text-right"><strong>Total Harga Obat:</strong>
                                             </td>
                                             <td class="text-right"><strong>Rp
                                                     {{ number_format($totalObat, 0, ',', '.') }}</strong></td>
@@ -94,15 +106,59 @@
                     </div>
                 </div>
 
-                <!-- Total Biaya -->
+                <!-- Rincian Biaya -->
                 <div class="card mb-3">
-                    <div class="card-body text-center bg-light">
-                        <h5 class="card-title mb-3">Total Biaya Pemeriksaan</h5>
-                        <h2 class="text-success mb-0">
-                            <i class="fas fa-money-bill-wave"></i>
-                            Rp {{ number_format($periksa->biaya_periksa, 0, ',', '.') }}
-                        </h2>
-                        <small class="text-muted">Sudah termasuk biaya konsultasi dan obat</small>
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-file-invoice-dollar"></i> Rincian Biaya</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                @php
+                                    $biayaDokter = 150000; // Biaya jasa dokter tetap (sesuai create periksa)
+                                    $totalBiayaObat = 0;
+
+                                    if ($periksa->detailPeriksa && $periksa->detailPeriksa->count() > 0) {
+                                        foreach ($periksa->detailPeriksa as $detail) {
+                                            $totalBiayaObat += $detail->obat->harga * $detail->jumlah;
+                                        }
+                                    }
+                                @endphp
+                                <tbody>
+                                    <tr>
+                                        <td width="70%"><i class="fas fa-user-md text-primary"></i> Biaya Jasa Dokter
+                                        </td>
+                                        <td width="30%" class="text-right">Rp
+                                            {{ number_format($biayaDokter, 0, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-pills text-info"></i> Biaya Obat
+                                            @if ($periksa->detailPeriksa && $periksa->detailPeriksa->count() > 0)
+                                                <span class="badge badge-info">{{ $periksa->detailPeriksa->count() }}
+                                                    jenis obat</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-right">Rp {{ number_format($totalBiayaObat, 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <td><strong><i class="fas fa-calculator text-success"></i> TOTAL BIAYA</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <h5 class="text-success mb-0">
+                                                <strong>Rp
+                                                    {{ number_format($periksa->biaya_periksa, 0, ',', '.') }}</strong>
+                                            </h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-info mb-0 mt-3">
+                            <i class="fas fa-info-circle"></i>
+                            <small>Total biaya sudah termasuk biaya konsultasi dokter dan obat-obatan yang
+                                diresepkan.</small>
+                        </div>
                     </div>
                 </div>
 

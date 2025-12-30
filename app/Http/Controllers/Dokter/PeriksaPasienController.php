@@ -40,8 +40,12 @@ class PeriksaPasienController extends Controller
         // Get all available medicines
         $obats = Obat::all();
 
-        // Return view with medicines and patient registration ID
-        return view('dokter.periksa-pasien.create', compact('obats', 'id'));
+        // Get patient registration data with patient info
+        $daftar = DaftarPoli::with(['pasien', 'jadwalPeriksa'])
+            ->findOrFail($id);
+
+        // Return view with medicines, registration data, and patient ID
+        return view('dokter.periksa-pasien.create', compact('obats', 'id', 'daftar'));
     }
 
     /**
@@ -68,7 +72,7 @@ class PeriksaPasienController extends Controller
             foreach ($obatTerpilih as $obat) {
                 $obatModel = Obat::findOrFail($obat['id']);
 
-                if (!$obatModel->hasStokCukup($obat['jumlah'])) {
+                if (!$obatModel->hasStockAvailable($obat['jumlah'])) {
                     throw new \Exception("Stok obat '{$obatModel->nama_obat}' tidak mencukupi. Tersedia: {$obatModel->stok}, Dibutuhkan: {$obat['jumlah']}");
                 }
             }
@@ -83,6 +87,13 @@ class PeriksaPasienController extends Controller
 
             // Save each selected medicine to detail_periksas table and update stock
             foreach ($obatTerpilih as $obat) {
+                $obatModel = Obat::findOrFail($obat['id']);
+
+                // Validate stock availability before processing
+                if (!$obatModel->hasStockAvailable($obat['jumlah'])) {
+                    throw new \Exception("Stok obat '{$obatModel->nama_obat}' tidak cukup. Stok tersedia: {$obatModel->stok}, dibutuhkan: {$obat['jumlah']}");
+                }
+
                 // Save detail periksa with quantity
                 DetailPeriksa::create([
                     'id_periksa' => $periksa->id,
@@ -90,8 +101,7 @@ class PeriksaPasienController extends Controller
                     'jumlah' => $obat['jumlah'],
                 ]);
 
-                // Auto-deduct stock using Model method (Capstone Feature)
-                $obatModel = Obat::findOrFail($obat['id']);
+                // Auto-deduct stock
                 if (!$obatModel->decreaseStock($obat['jumlah'])) {
                     throw new \Exception("Gagal mengurangi stok obat '{$obatModel->nama_obat}'");
                 }

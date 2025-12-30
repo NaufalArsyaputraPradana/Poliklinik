@@ -58,9 +58,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('dokter', DokterController::class)->except(['show']);
     Route::resource('pasien', PasienController::class)->except(['show']);
     Route::resource('obat', ObatController::class)->except(['show']);
-
-    // Stock Management (Capstone Feature)
-    Route::put('obat/{obat}/adjust-stock', [ObatController::class, 'adjustStock'])->name('obat.adjust-stock');
 });
 
 /**

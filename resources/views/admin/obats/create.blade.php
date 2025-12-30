@@ -49,11 +49,6 @@
                                 @enderror
                             </div>
 
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> <strong>Manajemen Stok Obat</strong><br>
-                                Atur stok awal dan stok minimum untuk monitoring otomatis.
-                            </div>
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
