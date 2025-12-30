@@ -22,7 +22,7 @@ class PeriksaPasienController extends Controller
         $dokterId = Auth::id();
 
         // Get all patients registered for this doctor with their relations
-        $daftarPolis = DaftarPoli::with(['pasien', 'jadwalPeriksa', 'periksas'])
+        $daftarPolis = DaftarPoli::with(['pasien', 'jadwalPeriksa', 'periksa'])
             ->whereHas('jadwalPeriksa', function ($query) use ($dokterId) {
                 $query->where('id_dokter', $dokterId);
             })
