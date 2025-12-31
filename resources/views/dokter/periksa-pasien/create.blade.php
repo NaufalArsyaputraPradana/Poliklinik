@@ -56,7 +56,7 @@
                         <h5 class="mb-0">Form Resep Obat & Pemeriksaan</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('dokter.periksa-pasien.store') }}" method="POST">
+                        <form action="{{ route('dokter.periksa-pasien.store') }}" method="POST" id="form-periksa">
                             @csrf
                             <input type="hidden" name="id_daftar_poli" value="{{ $daftar->id ?? $id }}">
 
@@ -148,19 +148,39 @@
 
                 // Validasi
                 if (!id) {
-                    alert('⚠ Silakan pilih obat terlebih dahulu!');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian!',
+                        text: 'Silakan pilih obat terlebih dahulu!',
+                        confirmButtonColor: '#3085d6'
+                    });
                     return;
                 }
 
                 if (jumlah <= 0) {
-                    alert('⚠ Jumlah harus lebih dari 0!');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian!',
+                        text: 'Jumlah harus lebih dari 0!',
+                        confirmButtonColor: '#3085d6'
+                    });
                     return;
                 }
 
                 if (jumlah > stok) {
-                    alert(
-                        `⚠ Stok tidak mencukupi!\n\nObat: ${nama}\nJumlah diminta: ${jumlah} unit\nStok tersedia: ${stok} unit`
-                        );
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Stok Tidak Mencukupi!',
+                        html: `
+                            <div class="text-left">
+                                <p><strong>Obat:</strong> ${nama}</p>
+                                <p><strong>Jumlah diminta:</strong> <span class="text-danger">${jumlah} unit</span></p>
+                                <p><strong>Stok tersedia:</strong> <span class="text-success">${stok} unit</span></p>
+                            </div>
+                        `,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK, Mengerti'
+                    });
                     return;
                 }
 
@@ -170,9 +190,23 @@
                     const totalJumlahBaru = daftarObat[existingIndex].jumlah + jumlah;
 
                     if (totalJumlahBaru > stok) {
-                        alert(
-                            `⚠ Stok tidak mencukupi!\n\nObat: ${nama}\nTotal jumlah: ${totalJumlahBaru} unit\nStok tersedia: ${stok} unit`
-                            );
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Stok Tidak Mencukupi!',
+                            html: `
+                                <div class="text-left">
+                                    <p><strong>Obat:</strong> ${nama}</p>
+                                    <p><strong>Jumlah di keranjang:</strong> ${daftarObat[existingIndex].jumlah} unit</p>
+                                    <p><strong>Jumlah akan ditambah:</strong> ${jumlah} unit</p>
+                                    <p><strong>Total jumlah:</strong> <span class="text-danger">${totalJumlahBaru} unit</span></p>
+                                    <p><strong>Stok tersedia:</strong> <span class="text-success">${stok} unit</span></p>
+                                    <hr>
+                                    <p class="text-danger mb-0"><i class="fas fa-exclamation-triangle"></i> Stok tidak cukup untuk jumlah tersebut!</p>
+                                </div>
+                            `,
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'OK, Mengerti'
+                        });
                         return;
                     }
 
@@ -239,12 +273,93 @@
             }
 
             function hapusObat(index) {
-                daftarObat.splice(index, 1);
-                renderObat();
+                const obat = daftarObat[index];
+
+                Swal.fire({
+                    title: 'Hapus Obat?',
+                    html: `Apakah Anda yakin ingin menghapus <strong>${obat.nama}</strong> dari daftar?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        daftarObat.splice(index, 1);
+                        renderObat();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Obat berhasil dihapus dari daftar',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                });
             }
 
             // Initial render (kosong)
             renderObat();
+
+            // ========================================
+            // KONFIRMASI SUBMIT FORM
+            // ========================================
+            document.getElementById('form-periksa').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const catatan = document.getElementById('catatan').value.trim();
+                const totalBiaya = document.getElementById('biaya_periksa').value;
+                const jumlahObat = daftarObat.length;
+
+                // Validasi catatan
+                if (!catatan) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian!',
+                        text: 'Catatan pemeriksaan wajib diisi!',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    return;
+                }
+
+                // Konfirmasi submit
+                Swal.fire({
+                    title: 'Konfirmasi Pemeriksaan',
+                    html: `
+                        <div class="text-left">
+                            <p><strong>Pasien:</strong> {{ $daftar->pasien->nama ?? '-' }}</p>
+                            <p><strong>Jumlah obat diresepkan:</strong> ${jumlahObat} item</p>
+                            <p><strong>Total biaya:</strong> <span class="text-primary">Rp ${parseInt(totalBiaya).toLocaleString('id-ID')}</span></p>
+                            <hr>
+                            <p class="mb-0"><i class="fas fa-info-circle"></i> Apakah Anda yakin ingin menyimpan pemeriksaan ini?</p>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-check"></i> Ya, Simpan!',
+                    cancelButtonText: '<i class="fas fa-times"></i> Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading
+                        Swal.fire({
+                            title: 'Menyimpan...',
+                            html: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Submit form
+                        e.target.submit();
+                    }
+                });
+            });
         </script>
     @endpush
 </x-layouts.app>
